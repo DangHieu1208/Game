@@ -49,3 +49,41 @@ bool Entity::isCollided(Entity& A) {
     return false;
 }
 
+bool Entity::checkCollision(SDL_Rect& wall) {
+    SDL_Rect entityRect = dst;
+    SDL_Rect wallRect = wall;
+
+    return (entityRect.x < wallRect.x + wallRect.w &&
+            entityRect.x + entityRect.w > wallRect.x &&
+            entityRect.y < wallRect.y + wallRect.h &&
+            entityRect.y + entityRect.h > wallRect.y);
+}
+
+void Entity::solveCollision(SDL_Rect& wall) {
+    SDL_Rect entityRect = dst;
+    SDL_Rect wallRect = wall;
+
+    int leftOverlap = (entityRect.x + entityRect.w) - wallRect.x;
+    int rightOverlap = (wallRect.x + wallRect.w) - entityRect.x;
+    int topOverlap = (entityRect.y + entityRect.h) - wallRect.y;
+    int bottomOverlap = (wallRect.y + wallRect.h) - entityRect.y;
+
+    int minOverlap = leftOverlap;
+    if (rightOverlap < minOverlap) minOverlap = rightOverlap;
+    if (topOverlap < minOverlap) minOverlap = topOverlap;
+    if (bottomOverlap < minOverlap) minOverlap = bottomOverlap;
+
+    if (minOverlap == leftOverlap && leftOverlap > 0) {
+        dst.x -= minOverlap;
+    }
+    else if (minOverlap == rightOverlap && rightOverlap > 0) {
+        dst.x += minOverlap;
+    }
+    else if (minOverlap == topOverlap && topOverlap > 0) {
+        dst.y -= minOverlap;
+    }
+    else if (minOverlap == bottomOverlap && bottomOverlap > 0) {
+        dst.y += minOverlap;
+    }
+}
+

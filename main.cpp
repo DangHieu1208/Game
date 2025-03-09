@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "Tile_map.h"
+#include "Enemy.h"
 
 
 void Init() {
@@ -36,7 +37,7 @@ int main(int argc, char* argv[])
 
     Player player;
     player.loadTex("graphic/player.png", renderer);
-    player.setDst(0, 0, 160, 160);
+    player.setDst(100, 100, 120, 79);
 
     Map game_map;
     game_map.loadMap(renderer, "map.txt");
@@ -55,9 +56,12 @@ int main(int argc, char* argv[])
             player.handleEvent(event);
         }
         player.update(currentTime);
+        //enemy.update(currentTime, player);
+
         SDL_RenderClear(renderer);
 
-        game_map.createMap(renderer, player);
+        game_map.renderMap(renderer, player);
+        //enemy.renderEnemy(renderer, player.camera);
         player.renderPlayer(renderer);
         SDL_RenderPresent(renderer);
 

@@ -83,8 +83,8 @@ void Player::update(Uint32 crTime) {
     static int stand_index = 0;
 
     if (isAttacking) {
-        if (crTime - AttackStartTime >= 80) {
-            setSrc(attack_index*56, 56, 56, 56);
+        if (crTime - AttackStartTime >= 50) {
+            setSrc(attack_index*56, 1*56+22, 56-4, 56-22);
             attack_index++;
             AttackStartTime = crTime;
             if (attack_index > 7) {
@@ -96,7 +96,7 @@ void Player::update(Uint32 crTime) {
 
     else if (move_left || move_right || go_up || go_down) {
         if (crTime - MoveStartTime >= 80) {
-            setSrc(move_index*56, 2*56, 56, 56);
+            setSrc(move_index*56, 2*56+22, 56-4, 56-22);
             move_index++;
             MoveStartTime = crTime;
             if (move_index > 7) {
@@ -113,7 +113,7 @@ void Player::update(Uint32 crTime) {
 
     else {
         if (crTime - StandStartTime >= 60) {
-            setSrc(stand_index*56, 0, 56, 56);
+            setSrc(stand_index*56, 0+22, 56-4, 56-22);
             stand_index++;
             StandStartTime = crTime;
             if (stand_index > 5) {

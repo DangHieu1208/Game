@@ -17,6 +17,8 @@ public:
     void render(SDL_Renderer* ren, SDL_Rect dst_);
     void renderFlip(SDL_Renderer* ren, SDL_Rect dst_);
     bool isCollided(Entity& A);
+    bool checkCollision(SDL_Rect& wall);
+    void solveCollision(SDL_Rect& wall);
 
 };
 

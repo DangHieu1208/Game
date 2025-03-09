@@ -5,6 +5,7 @@
 #include "Const.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Enemy.h"
 
 struct Tile : public Entity {
 public:
@@ -15,13 +16,12 @@ struct Map {
 private:
     int tiles[18][32];
     SDL_Rect tile[18][32];
-    Tile wall;
-    Tile floor;
+    Tile mapTile[20];
 public:
+    vector<Enemy> enemies;
     int offSetX = 0, offSetY = 0;
     void loadMap(SDL_Renderer* ren, const char* file_name);
-    void createMap(SDL_Renderer* ren, Player& player);
-    void scrollMap(Player& player, SDL_Event& e);
+    void renderMap(SDL_Renderer* ren, Player& player);
     void print();
 };
 

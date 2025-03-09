@@ -9,30 +9,41 @@
 	<SDL_ttf.h>
 	<fstream>
 
-1741451292 source:c:\project\game\main.cpp
+1741540519 source:c:\project\game\main.cpp
 	"Const.h"
 	"Entity.h"
 	"Player.h"
 	"Tile_map.h"
+	"Enemy.h"
 
-1741451483 source:c:\project\game\entity.cpp
+1741533999 source:c:\project\game\entity.cpp
 	"Entity.h"
 
-1741451529 c:\project\game\entity.h
+1741533882 c:\project\game\entity.h
 	"Const.h"
 
-1741451972 source:c:\project\game\player.cpp
+1741534054 source:c:\project\game\player.cpp
 	"Player.h"
 
-1741449378 c:\project\game\player.h
+1741534025 c:\project\game\player.h
 	"Entity.h"
+	<math.h>
 
-1741451654 source:c:\project\game\tile_map.cpp
+1741541258 source:c:\project\game\tile_map.cpp
 	"Tile_map.h"
 
-1741449789 c:\project\game\tile_map.h
+1741540793 c:\project\game\tile_map.h
 	<vector>
 	"Const.h"
+	"Entity.h"
+	"Player.h"
+	"Enemy.h"
+
+1741541221 source:c:\project\game\enemy.cpp
+	"Enemy.h"
+	<math.h>
+
+1741541283 c:\project\game\enemy.h
 	"Entity.h"
 	"Player.h"
 
