@@ -3,9 +3,11 @@
 #include "Player.h"
 #include "Tile_map.h"
 #include "Enemy.h"
+#include <cstdlib>
 
 
 void Init() {
+    srand(time(NULL));
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         cout << "Failed to initiate SDL: " << SDL_GetError() << endl;
     }
@@ -26,6 +28,11 @@ void Init() {
         cout << "Failed to initiate IMG!" << endl;
         return;
     }
+
+    if (TTF_Init() < 0) {
+        cout << "Failed to initiate TTF!" << endl;
+        return;
+    }
 }
 
 int frameDelay = 1000/60;
@@ -37,10 +44,10 @@ int main(int argc, char* argv[])
 
     Player player;
     player.loadTex("graphic/player.png", renderer);
-    player.setDst(100, 100, 120, 79);
+    player.setDst(100, 100, 120, 120);
 
     Map game_map;
-    game_map.loadMap(renderer, "map.txt");
+    game_map.loadMap(renderer, "map.txt", player);
 
     game_map.print();
 
@@ -56,12 +63,10 @@ int main(int argc, char* argv[])
             player.handleEvent(event);
         }
         player.update(currentTime);
-        //enemy.update(currentTime, player);
 
         SDL_RenderClear(renderer);
 
-        game_map.renderMap(renderer, player);
-        //enemy.renderEnemy(renderer, player.camera);
+        game_map.renderMap(renderer, player,currentTime);
         player.renderPlayer(renderer);
         SDL_RenderPresent(renderer);
 
@@ -75,4 +80,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

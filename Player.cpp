@@ -1,5 +1,18 @@
 #include "Player.h"
 
+
+void Player::loadHP(SDL_Renderer* ren) {
+    PlayerHP.loadFont("font.ttf", 30, ren);
+    PlayerHP.setPosition(0, 0);
+}
+
+void Player::updateHP(SDL_Renderer* ren) {
+    char playerHP[10];
+    sprintf(playerHP, "HP:%01d/10", HP);
+    PlayerHP.setText(playerHP, {255, 255, 255, 255}, ren);
+    PlayerHP.render(ren);
+}
+
 void Player::updateCamera() {
     int mapWidth = 32*80;
     int mapHeight = 18*80;
@@ -57,6 +70,12 @@ void Player::handleEvent(SDL_Event& e) {
                 go_down = true;
             }
             break;
+        case SDLK_k:
+            if (!defence) {
+                defence = true;
+            }
+            DefenceStartTime = SDL_GetTicks();
+            break;
         }
     }
     if (e.type == SDL_KEYUP) {
@@ -73,21 +92,24 @@ void Player::handleEvent(SDL_Event& e) {
         case SDLK_s:
             go_down = false;
             break;
+        case SDLK_k:
+            defence = false;
+            break;
         }
     }
 }
 
 void Player::update(Uint32 crTime) {
-    static int attack_index = 0;
     static int move_index = 0;
     static int stand_index = 0;
+    static int defence_index = 0;
 
     if (isAttacking) {
         if (crTime - AttackStartTime >= 50) {
-            setSrc(attack_index*56, 1*56+22, 56-4, 56-22);
+            setSrc(attack_index*56, 56, 56, 56);
             attack_index++;
             AttackStartTime = crTime;
-            if (attack_index > 7) {
+            if (attack_index > 5) {
                 isAttacking = false;
                 attack_index = 0;
             }
@@ -96,24 +118,35 @@ void Player::update(Uint32 crTime) {
 
     else if (move_left || move_right || go_up || go_down) {
         if (crTime - MoveStartTime >= 80) {
-            setSrc(move_index*56, 2*56+22, 56-4, 56-22);
+            setSrc(move_index*56, 2*56, 56, 56);
             move_index++;
             MoveStartTime = crTime;
-            if (move_index > 7) {
+            if (move_index > 5) {
                 move_index = 0;
             }
         }
-        if (move_right) dst.x += 5;
-        if (move_left) dst.x -= 5;
-        if (go_up) dst.y -= 5;
-        if (go_down) dst.y += 5;
+        if (move_right) dst.x += 6;
+        if (move_left) dst.x -= 6;
+        if (go_up) dst.y -= 6;
+        if (go_down) dst.y += 6;
 
         updateCamera();
     }
 
+    else if (defence) {
+        if (crTime - DefenceStartTime >= 80) {
+            setSrc(defence_index*56, 10*56, 56, 56);
+            defence_index++;
+            DefenceStartTime = crTime;
+            if (defence_index > 2) {
+                defence_index = 2;
+            }
+        }
+    }
+
     else {
         if (crTime - StandStartTime >= 60) {
-            setSrc(stand_index*56, 0+22, 56-4, 56-22);
+            setSrc(stand_index*56, 0, 56, 56);
             stand_index++;
             StandStartTime = crTime;
             if (stand_index > 5) {

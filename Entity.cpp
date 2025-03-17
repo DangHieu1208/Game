@@ -1,5 +1,12 @@
 #include "Entity.h"
+#include <cmath>
 
+bool Entity::isRendered() {
+    if (tex) {
+        return true;
+    }
+    return false;
+}
 void Entity::setSrc(int x, int y, int w, int h) {
     src.x = x;
     src.y = y;
@@ -49,24 +56,39 @@ bool Entity::isCollided(Entity& A) {
     return false;
 }
 
+
 bool Entity::checkCollision(SDL_Rect& wall) {
     SDL_Rect entityRect = dst;
     SDL_Rect wallRect = wall;
 
-    return (entityRect.x < wallRect.x + wallRect.w &&
-            entityRect.x + entityRect.w > wallRect.x &&
-            entityRect.y < wallRect.y + wallRect.h &&
-            entityRect.y + entityRect.h > wallRect.y);
+    SDL_Rect hitbox = {
+        entityRect.x + LeftOffSet,
+        entityRect.y + TopOffSet,
+        entityRect.w - abs(LeftOffSet),
+        entityRect.h - TopOffSet
+    };
+
+    return (hitbox.x < wallRect.x + wallRect.w &&
+            hitbox.x + hitbox.w > wallRect.x &&
+            hitbox.y < wallRect.y + wallRect.h &&
+            hitbox.y + hitbox.h > wallRect.y);
 }
 
 void Entity::solveCollision(SDL_Rect& wall) {
     SDL_Rect entityRect = dst;
     SDL_Rect wallRect = wall;
 
-    int leftOverlap = (entityRect.x + entityRect.w) - wallRect.x;
-    int rightOverlap = (wallRect.x + wallRect.w) - entityRect.x;
-    int topOverlap = (entityRect.y + entityRect.h) - wallRect.y;
-    int bottomOverlap = (wallRect.y + wallRect.h) - entityRect.y;
+    SDL_Rect hitbox = {
+        entityRect.x + LeftOffSet,
+        entityRect.y + TopOffSet,
+        entityRect.w - abs(LeftOffSet),
+        entityRect.h - TopOffSet
+    };
+
+    int leftOverlap = (hitbox.x + hitbox.w) - wallRect.x;
+    int rightOverlap = (wallRect.x + wallRect.w) - hitbox.x;
+    int topOverlap = (hitbox.y + hitbox.h) - wallRect.y;
+    int bottomOverlap = (wallRect.y + wallRect.h) - hitbox.y;
 
     int minOverlap = leftOverlap;
     if (rightOverlap < minOverlap) minOverlap = rightOverlap;
@@ -86,4 +108,3 @@ void Entity::solveCollision(SDL_Rect& wall) {
         dst.y += minOverlap;
     }
 }
-

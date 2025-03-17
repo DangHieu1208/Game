@@ -9,41 +9,57 @@
 	<SDL_ttf.h>
 	<fstream>
 
-1741540519 source:c:\project\game\main.cpp
+1742232774 source:c:\project\game\main.cpp
 	"Const.h"
 	"Entity.h"
 	"Player.h"
 	"Tile_map.h"
 	"Enemy.h"
+	<cstdlib>
 
-1741533999 source:c:\project\game\entity.cpp
+1742233548 source:c:\project\game\entity.cpp
 	"Entity.h"
+	<cmath>
 
-1741533882 c:\project\game\entity.h
+1742235113 c:\project\game\entity.h
 	"Const.h"
+	<cmath>
 
-1741534054 source:c:\project\game\player.cpp
+1742232268 source:c:\project\game\player.cpp
 	"Player.h"
 
-1741534025 c:\project\game\player.h
+1742230773 c:\project\game\player.h
 	"Entity.h"
+	"Message.h"
 	<math.h>
 
-1741541258 source:c:\project\game\tile_map.cpp
+1742234551 source:c:\project\game\tile_map.cpp
 	"Tile_map.h"
+	<cstdlib>
 
-1741540793 c:\project\game\tile_map.h
+1742232455 c:\project\game\tile_map.h
 	<vector>
 	"Const.h"
 	"Entity.h"
 	"Player.h"
 	"Enemy.h"
+	"Message.h"
 
-1741541221 source:c:\project\game\enemy.cpp
+1742235127 source:c:\project\game\enemy.cpp
 	"Enemy.h"
 	<math.h>
 
-1741541283 c:\project\game\enemy.h
+1742235410 c:\project\game\enemy.h
 	"Entity.h"
 	"Player.h"
+	"Message.h"
+
+1742227358 c:\project\game\message.h
+	"Const.h"
+	<SDL_ttf.h>
+	<string>
+
+1742227358 source:c:\project\game\message.cpp
+	"Message.h"
+	<iostream>
 
