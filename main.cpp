@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
             if (event.type == SDL_QUIT) {
                 running = false;
             }
+            game_map.playerUpgrade(event, player);
             player.handleEvent(event);
         }
         player.update(currentTime);

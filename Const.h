@@ -15,6 +15,9 @@ static SDL_Event event;
 static int mouseX, mouseY;
 static Uint32 currentTime;
 static bool running = true;
+static int ENEMY_NUMS_WAVE_1 = 5;
+static int ENEMY_ADD_EACH_WAVE = ENEMY_NUMS_WAVE_1/2;
+static int enemyDamage = 1;
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720

@@ -35,7 +35,7 @@ void Player::updateCamera() {
     }
 }
 
-void Player::handleEvent(SDL_Event& e) {
+/*void Player::handleEvent(SDL_Event& e) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
         case SDLK_d:
@@ -97,6 +97,72 @@ void Player::handleEvent(SDL_Event& e) {
             break;
         }
     }
+}*/
+
+void Player::handleEvent(SDL_Event& e) {
+
+    const Uint8* keystate = SDL_GetKeyboardState(NULL);
+
+    if (keystate[SDL_SCANCODE_D]) {
+        if (!move_right) {
+            move_right = true;
+            facing_right = true;
+            facing_left = false;
+            MoveStartTime = SDL_GetTicks();
+        }
+    } else {
+        move_right = false;
+    }
+
+    if (keystate[SDL_SCANCODE_A]) {
+        if (!move_left) {
+            move_left = true;
+            facing_left = true;
+            facing_right = false;
+            MoveStartTime = SDL_GetTicks();
+        }
+    } else {
+        move_left = false;
+    }
+
+    if (keystate[SDL_SCANCODE_W]) {
+        if (!go_up) {
+            go_up = true;
+        }
+    } else {
+        go_up = false;
+    }
+
+    if (keystate[SDL_SCANCODE_S]) {
+        if (!go_down) {
+            go_down = true;
+        }
+    } else {
+        go_down = false;
+    }
+
+    if (keystate[SDL_SCANCODE_J]) {
+        if (!isAttacking) {
+            isAttacking = true;
+            AttackStartTime = SDL_GetTicks();
+        }
+    }
+
+    if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == SDLK_k && !defence && !defenceCooldown) {
+            defence = true;
+            defenceCooldown = true;
+            DefenceStartTime = SDL_GetTicks();
+            DefenceBeginTime = SDL_GetTicks();
+        }
+    }
+
+    if (e.type == SDL_KEYUP) {
+        if (e.key.keysym.sym == SDLK_k) {
+            defence = false;
+            defenceCooldown = false;
+        }
+    }
 }
 
 void Player::update(Uint32 crTime) {
@@ -141,6 +207,10 @@ void Player::update(Uint32 crTime) {
             if (defence_index > 2) {
                 defence_index = 2;
             }
+        }
+        if (crTime - DefenceBeginTime >= 3000) {
+            defence = false;
+            defence_index = 0;
         }
     }
 

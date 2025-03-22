@@ -11,11 +11,14 @@ private:
     Uint32 AttackStartTime;
     Uint32 MoveStartTime;
     Uint32 DefenceStartTime;
+    Uint32 DefenceBeginTime;
     Uint32 StandStartTime = SDL_GetTicks();
 public:
     Message PlayerHP;
     int attack_index = 0;
-    bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false;;
+    int attackDamage = 1;
+    int defence_abusing = 0;
+    bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false, defenceCooldown = false;
     SDL_Rect camera;
     int HP = 10;
     void renderPlayer(SDL_Renderer* ren);
