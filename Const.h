@@ -18,6 +18,7 @@ static bool running = true;
 static int ENEMY_NUMS_WAVE_1 = 5;
 static int ENEMY_ADD_EACH_WAVE = ENEMY_NUMS_WAVE_1/2;
 static int enemyDamage = 1;
+static int enemy_base_HP = 20;
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720

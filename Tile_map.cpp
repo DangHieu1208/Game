@@ -20,11 +20,30 @@ void Map::loadMap(SDL_Renderer* ren, const char* file_name, Player& player) {
         }
     }
 
-    mapTile[0].loadTex("graphic/tiles.png", ren);
-    mapTile[0].setSrc(0, 16, 32, 32);
+    mapTile[0].loadTex("graphic/tiles01.png", ren);
+    mapTile[0].setSrc(16, 4*16, 16, 16);
 
-    mapTile[1].loadTex("graphic/tiles.png", ren);
-    mapTile[1].setSrc(0, 160, 32, 32);
+    mapTile[1].loadTex("graphic/tiles01.png", ren);
+    mapTile[1].setSrc(16, 16-2, 16, 16);
+
+    mapTile[2].loadTex("graphic/tiles01.png", ren);
+    mapTile[2].setSrc(0, 9*16+4, 16, 16);
+
+    mapTile[3].loadTex("graphic/tiles01.png", ren);
+    mapTile[3].setSrc(16, 9*16+4, 16, 16);
+
+    mapTile[4].loadTex("graphic/tiles01.png", ren);
+    mapTile[4].setSrc(16, 2*16-2, 16, 16);
+
+    mapTile[5].loadTex("graphic/tiles01.png", ren);
+    mapTile[5].setSrc(4*16, 12*16, 16, 16);
+
+    mapTile[6].loadTex("graphic/tiles01.png", ren);
+    mapTile[6].setSrc(4*16, 16-2, 16, 16);
+
+    mapTile[7].loadTex("graphic/tiles01.png", ren);
+    mapTile[7].setSrc(4*16, 4*16, 16, 16);
+
 
     player.loadHP(ren);
 
@@ -49,8 +68,8 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
         for (int j = 0; j < 32; j++) {
             SDL_Rect renderQuad = {tile[i][j].x - player.camera.x, tile[i][j].y - player.camera.y, 80, 80};
             SDL_Rect wallRect = {tile[i][j].x, tile[i][j].y, 80, 80};
-            if (tiles[i][j] == 1) {
-                mapTile[0].render(ren, renderQuad);
+            mapTile[tiles[i][j]].render(ren, renderQuad);
+            if (tiles[i][j] == 1 || tiles[i][j] == 2 || tiles[i][j] == 3 || tiles[i][j] == 4) {
                 if (player.move_left) {
                     player.LeftOffSet = 22;
                 }
@@ -64,9 +83,16 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                     player.solveCollision(wallRect);
                 }
             }
-            else {
+            if (tiles[i][j] == 0) {
                 randomSpawnEnemy(crTime, ren);
-                mapTile[1].render(ren, renderQuad);
+            }
+            if (tiles[i][j] == 5) {
+                if (player.checkCollision(wallRect)) {
+                    if (crTime - player.TrappedStartTime >= 1000) {
+                        player.HP --;
+                        player.TrappedStartTime = crTime;
+                    }
+                }
             }
         }
     }
@@ -108,13 +134,14 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
             enemyDamage += 1;
             enemyAttackUpgraded = true;
         }
+        enemy_base_HP += 1;
         enemy_killed = 0;
     }
 
     if (isInterval) {
         intervalCount(crTime, ren);
         if (!pointUpgraded) {
-            upgrade_points = upgrade_points + ENEMY_NUMS_WAVE_1/2;
+            upgrade_points = upgrade_points + ENEMY_NUMS_WAVE_1/2 + 10;
             pointUpgraded = true;
         }
     }
@@ -197,19 +224,38 @@ void Map::renderWave(SDL_Renderer* ren) {
 void Map::playerUpgrade(SDL_Event& event, Player& player) {
     if (event.type == SDL_KEYDOWN && isInterval) {
         switch(event.key.keysym.sym) {
-        case SDLK_1:
-            if (!hpUpgraded && upgrade_points >= 2) {
-                player.HP += 5;
-                upgrade_points -= 2;
-                hpUpgraded = true;
-            }
-        case SDLK_2:
-            if (!attackUpgraded && upgrade_points >= 3) {
-                player.attackDamage += 1;
-                upgrade_points -= 3;
-                attackUpgraded = true;
-            }
+            case SDLK_1:
+                if (!hpUpgraded && upgrade_points >= 3) {
+                    player.HP += 2;
+                    if (player.HP >= player.max_HP) {
+                        player.max_HP = player.HP;
+                    }
+                    upgrade_points -= 3;
+                    hpUpgraded = true;
+                }
+                break;
+            case SDLK_2:
+                if (!attackUpgraded && upgrade_points >= 5) {
+                    player.attackDamage += 1;
+                    upgrade_points -= 5;
+                    attackUpgraded = true;
+                }
+                break;
         }
 
+    }
+    else if (event.type == SDL_KEYUP && isInterval) {
+        switch (event.key.keysym.sym) {
+            case SDLK_1:
+                if (upgrade_points >= 2) {
+                    hpUpgraded = false;
+                }
+                break;
+            case SDLK_2:
+                if (upgrade_points >= 3) {
+                    attackUpgraded = false;
+                }
+                break;
+        }
     }
 }

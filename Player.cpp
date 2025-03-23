@@ -8,7 +8,7 @@ void Player::loadHP(SDL_Renderer* ren) {
 
 void Player::updateHP(SDL_Renderer* ren) {
     char playerHP[10];
-    sprintf(playerHP, "HP:%01d/10", HP);
+    sprintf(playerHP, "HP:%01d/%01d", HP, max_HP);
     PlayerHP.setText(playerHP, {255, 255, 255, 255}, ren);
     PlayerHP.render(ren);
 }

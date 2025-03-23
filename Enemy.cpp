@@ -2,7 +2,9 @@
 #include <math.h>
 
 void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave) {
-
+    if (player.attack_index == 0) {
+        isAttacked = false;
+    }
 
     if (crTime - lastUpdateTime >= 80 && !isAttacking && (crTime - attackCoolDown >= 500) && !isDied) {
         setSrc(animFrame*64, 1*64, 64, 64);
@@ -58,7 +60,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
 
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 32; j++) {
-            if (mapTiles[i][j] == 1) {
+            if (mapTiles[i][j] == 1 || mapTiles[i][j] == 2 || mapTiles[i][j] == 3 || mapTiles[i][j] == 4) {
                 if (checkCollision(mapTileRects[i][j])) {
                     solveCollision(mapTileRects[i][j], player);
                 }
@@ -66,8 +68,9 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
         }
     }
 
-    if (!isDied && player.isAttacking && isCollided(player) && player.attack_index == 5) {
+    if (!isDied && !isAttacked && player.isAttacking && isCollided(player) && player.attack_index == 5) {
         HP -= player.attackDamage;
+        isAttacked = true;
         if (HP <= 0) {
             isDied = true;
             animFrame = 0;
@@ -136,7 +139,7 @@ void Enemy::loadHP(SDL_Renderer* ren) {
 
 void Enemy::updateHP(SDL_Renderer* ren, Player& player) {
     char enemyHP[10];
-    sprintf(enemyHP, "%01d/20", HP);
+    sprintf(enemyHP, "%01d/%01d", HP, max_HP);
     if (!isDied) {
         EnemyHP.setPosition(dst.x - player.camera.x + 50, dst.y - player.camera.y);
         EnemyHP.setText(enemyHP, {255, 255, 255, 255}, ren);
