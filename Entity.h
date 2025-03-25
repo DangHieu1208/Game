@@ -18,9 +18,9 @@ public:
     void setSrc(int x, int y, int w, int h);
     void setDst(int x, int y, int w, int h);
     void loadTex(const char* file_name, SDL_Renderer* ren);
-    void render(SDL_Renderer* ren, SDL_Rect dst_);
+    void render(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera);
     bool isRendered();
-    void renderFlip(SDL_Renderer* ren, SDL_Rect dst_);
+    void renderFlip(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera);
     bool isCollided(Entity& A);
     bool checkCollision(SDL_Rect& wall);
     void solveCollision(SDL_Rect& wall);

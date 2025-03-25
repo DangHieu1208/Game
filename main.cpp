@@ -3,8 +3,10 @@
 #include "Player.h"
 #include "Tile_map.h"
 #include "Enemy.h"
+#include "Button.h"
 #include <cstdlib>
 
+enum GameState {menu, playing, quit, pause, instruct, over};
 
 void Init() {
     srand(time(NULL));
@@ -35,12 +37,66 @@ void Init() {
     }
 }
 
-int frameDelay = 1000/60;
+void close() {
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
 
+int frameDelay = 1000/60;
 
 int main(int argc, char* argv[])
 {
     Init();
+
+    Message Title;
+    Title.loadFont("font.ttf", 200, renderer);
+    Title.setPosition(80, 0);
+    Title.setText("Dungeon Warrior", {255, 255, 255, 255}, renderer);
+
+    Message Instruction;
+    Instruction.loadFont("font.ttf", 64, renderer);
+    Instruction.setPosition(55, 75);
+
+    Message GameOver;
+    GameOver.loadFont("font.ttf", 200, renderer);
+    GameOver.setPosition(300, 0);
+    GameOver.setText("Game Over", {255, 255, 255, 255}, renderer);
+
+    Message Score;
+    Score.loadFont("font.ttf", 100, renderer);
+    Score.setPosition(480, 200);
+
+
+    Entity background;
+    background.loadTex("graphic/Background.png", renderer);
+    background.setSrc(0, 0, 1920, 1080);
+    background.setDst(0, 0, 1280, 720);
+
+    GameState state = menu;
+    Button playButton;
+    Button quitButton;
+    Button resumeButton;
+    Button startButton;
+    Button exitButton;
+
+    playButton.loadTex("graphic/Play Button.png", renderer);
+    resumeButton.loadTex("graphic/Resume Button.png", renderer);
+    quitButton.loadTex("graphic/Quit Button.png", renderer);
+    startButton.loadTex("graphic/Start Button.png", renderer);
+    exitButton.loadTex("graphic/Exit Button.png", renderer);
+
+    playButton.setSrc(0, 0, 600, 200);
+    resumeButton.setSrc(0, 0, 600, 200);
+    quitButton.setSrc(0, 0, 600, 200);
+    startButton.setSrc(0, 0, 600, 200);
+    exitButton.setSrc(0, 0, 600, 200);
+
+    startButton.setDst(1280/2 - 150, 720/2 - 75, 300, 100);
+    resumeButton.setDst(1280/2 - 150, 720/2 - 75, 300, 100);
+    quitButton.setDst(1280/2 - 150, 720/2 + 100, 300, 100);
+    playButton.setDst(1280/2 - 150, 720/2 + 200, 300, 100);
+    exitButton.setDst(1280/2 - 150, 720/2 - 25, 300, 100);
 
     Player player;
     player.loadTex("graphic/player.png", renderer);
@@ -55,20 +111,104 @@ int main(int argc, char* argv[])
     while (running) {
         currentTime = SDL_GetTicks();
 
-
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                running = false;
+                state = quit;
             }
-            game_map.playerUpgrade(event, player);
-            player.handleEvent(event);
+            if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE && state == playing) {
+                isPaused = true;
+                state = pause;
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+                int mouseX = event.button.x;
+                int mouseY = event.button.y;
+                if (state == menu) {
+                    if (startButton.isClicked(mouseX, mouseY)) {
+                        state = instruct;
+                    }
+                    if (quitButton.isClicked(mouseX, mouseY)) {
+                        state = quit;
+                    }
+                }
+                else if (state == pause) {
+                    if (resumeButton.isClicked(mouseX, mouseY)) {
+                        state = playing;
+                        isPaused = false;
+                    }
+                    if (quitButton.isClicked(mouseX, mouseY)) {
+                        state = quit;
+                    }
+                }
+                else if (state == instruct) {
+                    if (playButton.isClicked(mouseX, mouseY)) {
+                        state = playing;
+                    }
+                }
+                else if (state == over) {
+                    if (exitButton.isClicked(mouseX, mouseY)) {
+                        state = menu;
+                        Player player_restart;
+                        player_restart.loadTex("graphic/player.png", renderer);
+                        player_restart.setDst(100, 100, 120, 120);
+                        player = player_restart;
+                        game_map = Map();
+                        game_map.loadMap(renderer, "map.txt", player);
+                    }
+                    if (quitButton.isClicked(mouseX, mouseY)) {
+                        state = quit;
+                    }
+                }
+            }
+            if (state == playing) {
+                game_map.playerUpgrade(event, player);
+                player.handleEvent(event);
+            }
         }
-        player.update(currentTime);
+        if (state == playing && player.isDied && player.die_index == 8) {
+                SDL_Delay(1000);
+                char score[10];
+                sprintf(score, "SCORE: %02d", game_map.score_);
+                Score.setText(score, {255, 255, 255, 255}, renderer);
+                state = over;
+        }
 
         SDL_RenderClear(renderer);
 
-        game_map.renderMap(renderer, player,currentTime);
-        player.renderPlayer(renderer);
+        switch (state) {
+        case menu:
+            background.render(renderer, background.dst, player.camera);
+            startButton.renderButton(renderer, player.camera);
+            quitButton.renderButton(renderer, player.camera);
+            Title.render(renderer);
+            break;
+        case instruct:
+            background.render(renderer, background.dst, player.camera);
+            playButton.renderButton(renderer, player.camera);
+            Instruction.multiLinesRender("Move with W, A, S, D.\nAttack with J, defend with K.\nIf you defend for more than 3 consecutive seconds,\nyour character will no longer be able to defend.\nThere will be a 15-second break between each wave.\nPress ESC to pause the game.", {255, 255, 255, 255}, renderer);
+            break;
+        case playing:
+            player.update(currentTime);
+            game_map.renderMap(renderer, player, currentTime);
+            player.renderPlayer(renderer);
+            break;
+        case pause:
+            background.render(renderer, background.dst, player.camera);
+            resumeButton.renderButton(renderer, player.camera);
+            quitButton.renderButton(renderer, player.camera);
+            Title.render(renderer);
+            break;
+        case over:
+            background.render(renderer, background.dst, player.camera);
+            exitButton.renderButton(renderer, player.camera);
+            quitButton.renderButton(renderer, player.camera);
+            GameOver.render(renderer);
+            Score.render(renderer);
+            break;
+        case quit:
+            running = false;
+            break;
+        }
+
         SDL_RenderPresent(renderer);
 
         Uint32 frameTime = SDL_GetTicks() - frameStart;
@@ -76,8 +216,9 @@ int main(int argc, char* argv[])
             SDL_Delay(frameDelay - frameTime);
         }
         frameStart = SDL_GetTicks();
-
     }
+
+    close();
 
     return 0;
 }

@@ -8,7 +8,7 @@
 
 struct Enemy : public Entity {
 private:
-    int speed = rand() % (4-2+1)+2;
+    int speed = rand() % (enemy_base_speed-(enemy_base_speed-2)+1)+(enemy_base_speed - 2);
     Uint32 lastUpdateTime = SDL_GetTicks();
     Uint32 attackCoolDown = 0;
     //int animFrame = 0;

@@ -7,6 +7,9 @@ void Player::loadHP(SDL_Renderer* ren) {
 }
 
 void Player::updateHP(SDL_Renderer* ren) {
+    if (HP <= 0) {
+        return;
+    }
     char playerHP[10];
     sprintf(playerHP, "HP:%01d/%01d", HP, max_HP);
     PlayerHP.setText(playerHP, {255, 255, 255, 255}, ren);
@@ -35,69 +38,6 @@ void Player::updateCamera() {
     }
 }
 
-/*void Player::handleEvent(SDL_Event& e) {
-    if (e.type == SDL_KEYDOWN) {
-        switch (e.key.keysym.sym) {
-        case SDLK_d:
-            if (!move_right) {
-                move_right = true;
-                facing_right = true;
-                facing_left = false;
-                MoveStartTime = SDL_GetTicks();
-            }
-            break;
-        case SDLK_a:
-            if (!move_left) {
-                move_left = true;
-                facing_left = true;
-                facing_right = false;
-                MoveStartTime = SDL_GetTicks();
-            }
-            break;
-        case SDLK_j:
-            if (!isAttacking) {
-                isAttacking = true;
-                AttackStartTime = SDL_GetTicks();
-            }
-            break;
-        case SDLK_w:
-            if (!go_up) {
-                go_up = true;
-            }
-            break;
-        case SDLK_s:
-            if (!go_down) {
-                go_down = true;
-            }
-            break;
-        case SDLK_k:
-            if (!defence) {
-                defence = true;
-            }
-            DefenceStartTime = SDL_GetTicks();
-            break;
-        }
-    }
-    if (e.type == SDL_KEYUP) {
-        switch (e.key.keysym.sym) {
-        case SDLK_d:
-            move_right = false;
-            break;
-        case SDLK_a:
-            move_left = false;
-            break;
-        case SDLK_w:
-            go_up = false;
-            break;
-        case SDLK_s:
-            go_down = false;
-            break;
-        case SDLK_k:
-            defence = false;
-            break;
-        }
-    }
-}*/
 
 void Player::handleEvent(SDL_Event& e) {
 
@@ -170,7 +110,11 @@ void Player::update(Uint32 crTime) {
     static int stand_index = 0;
     static int defence_index = 0;
 
-    if (isAttacking) {
+    if (HP <= 0) {
+        isDied = true;
+    }
+
+    if (isAttacking && !isDied) {
         if (crTime - AttackStartTime >= 50) {
             setSrc(attack_index*56, 56, 56, 56);
             attack_index++;
@@ -182,7 +126,7 @@ void Player::update(Uint32 crTime) {
         }
     }
 
-    else if (move_left || move_right || go_up || go_down) {
+    else if ((move_left || move_right || go_up || go_down) && !isDied) {
         if (crTime - MoveStartTime >= 80) {
             setSrc(move_index*56, 2*56, 56, 56);
             move_index++;
@@ -191,15 +135,15 @@ void Player::update(Uint32 crTime) {
                 move_index = 0;
             }
         }
-        if (move_right) dst.x += 6;
-        if (move_left) dst.x -= 6;
-        if (go_up) dst.y -= 6;
-        if (go_down) dst.y += 6;
+        if (move_right) dst.x += speed;
+        if (move_left) dst.x -= speed;
+        if (go_up) dst.y -= speed;
+        if (go_down) dst.y += speed;
 
         updateCamera();
     }
 
-    else if (defence) {
+    else if (defence && !isDied) {
         if (crTime - DefenceStartTime >= 80) {
             setSrc(defence_index*56, 10*56, 56, 56);
             defence_index++;
@@ -211,6 +155,26 @@ void Player::update(Uint32 crTime) {
         if (crTime - DefenceBeginTime >= 3000) {
             defence = false;
             defence_index = 0;
+        }
+    }
+
+    else if (isDied) {
+        move_left = false;
+        move_left = false;
+        isAttacking = false;
+        defence = false;
+        facing_left = false;
+        facing_right = false;
+        go_down = false;
+        go_up = false;
+        if (crTime - DieStartTime >= 100) {
+            setSrc(die_index*56, 6*56, 56, 56);
+            die_index++;
+            DieStartTime = crTime;
+            if (die_index > 7) {
+                die_index = 8;
+            }
+
         }
     }
 
@@ -232,9 +196,9 @@ void Player::update(Uint32 crTime) {
 void Player::renderPlayer(SDL_Renderer* ren) {
     SDL_Rect renderQuad = {dst.x - camera.x, dst.y - camera.y, dst.w, dst.h};
     if (move_left || facing_left) {
-       renderFlip(ren, renderQuad);
+       renderFlip(ren, renderQuad, camera);
     }
     else {
-        render(ren, renderQuad);
+        render(ren, renderQuad, camera);
     }
 }

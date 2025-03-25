@@ -37,16 +37,20 @@ void Entity::loadTex(const char* file_name, SDL_Renderer* ren) {
     SDL_FreeSurface(load_surface);
 }
 
-void Entity::render(SDL_Renderer* ren, SDL_Rect dst_) {
+void Entity::render(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera) {
     if (tex) {
         SDL_RenderCopy(ren, tex, &src, &dst_);
     }
+
+    if (dst.x + dst.w < camera.x || dst.x > camera.x || dst.y + dst.h < camera.y || dst.y > camera.y) return;
 }
 
-void Entity::renderFlip(SDL_Renderer* ren, SDL_Rect dst_) {
+void Entity::renderFlip(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera) {
     if (tex) {
         SDL_RenderCopyEx(ren, tex, &src, &dst_, 180, NULL, SDL_FLIP_VERTICAL);
     }
+
+    if (dst.x + dst.w < camera.x || dst.x > camera.x || dst.y + dst.h < camera.y || dst.y > camera.y) return;
 }
 
 bool Entity::isCollided(Entity& A) {

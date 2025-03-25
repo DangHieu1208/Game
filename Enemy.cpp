@@ -126,11 +126,13 @@ void Enemy::renderEnemy(SDL_Renderer* ren, SDL_Rect& camera) {
     if (isDestroyed) return;
     SDL_Rect renderQuad = {dst.x - camera.x, dst.y - camera.y, dst.w, dst.h};
     if (!move_right) {
-       renderFlip(ren, renderQuad);
+       renderFlip(ren, renderQuad, camera);
     }
     else {
-        render(ren, renderQuad);
+        render(ren, renderQuad, camera);
     }
+
+    if (dst.x + dst.w < camera.x || dst.x > camera.x || dst.y + dst.h < camera.y || dst.y > camera.y) return;
 }
 
 void Enemy::loadHP(SDL_Renderer* ren) {

@@ -32,6 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Boost.cpp" />
+		<Unit filename="Boost.h" />
+		<Unit filename="Button.cpp" />
+		<Unit filename="Button.h" />
 		<Unit filename="Const.cpp" />
 		<Unit filename="Const.h" />
 		<Unit filename="Enemy.cpp" />

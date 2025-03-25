@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Message.h"
+#include "Boost.h"
 
 struct Tile : public Entity {
 public:
@@ -20,19 +21,25 @@ private:
     Tile mapTile[20];
     Uint32 lastSpawnTime = 0;
     Uint32 intervalStartTime = 0;
+    Uint32 trapStartTime = 0;
+    Uint32 lastSpawnBoostTime = 0;
 public:
-    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, enemyAttackUpgraded = false, pointUpgraded = false;
+    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, enemyAttackUpgraded = false, pointUpgraded = false, speedUpgraded = false;
     int enemy_killed = 0;
     int enemy_left = ENEMY_NUMS_WAVE_1;
     int intervalTime = 15;
     int score_ = 0;
     int upgrade_points = 0;
     int wave = 1;
+    int trap_index = 1;
     Message Wave;
     Message Score;
     Message Time;
     Message UpgradePoints;
+    Message Upgrade;
     vector<Enemy> enemies;
+    vector<Boost> HP_Boosts;
+    vector<Boost> Attack_Boosts;
     void loadMap(SDL_Renderer* ren, const char* file_name, Player& player);
     void renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime);
     void print();

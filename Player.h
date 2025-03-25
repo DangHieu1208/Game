@@ -15,14 +15,17 @@ private:
     Uint32 StandStartTime = SDL_GetTicks();
 public:
     Message PlayerHP;
+    Uint32 DieStartTime;
     Uint32 TrappedStartTime;
     int attack_index = 0;
-    int attackDamage = 4  ;
+    int attackDamage = 4 ;
+    int die_index = 0;
     int defence_abusing = 0;
-    bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false, defenceCooldown = false;
+    bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false, defenceCooldown = false, isDied = false;
     SDL_Rect camera;
     int HP = 10;
     int max_HP = HP;
+    int speed = 6;
     void renderPlayer(SDL_Renderer* ren);
     void update(Uint32 crTime);
     void updateCamera();

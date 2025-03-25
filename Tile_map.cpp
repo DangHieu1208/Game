@@ -20,28 +20,24 @@ void Map::loadMap(SDL_Renderer* ren, const char* file_name, Player& player) {
         }
     }
 
-    mapTile[0].loadTex("graphic/tiles01.png", ren);
+    for (int i = 0; i < 8; i++) {
+        mapTile[i].loadTex("graphic/tiles01.png", ren);
+    }
+
     mapTile[0].setSrc(16, 4*16, 16, 16);
 
-    mapTile[1].loadTex("graphic/tiles01.png", ren);
     mapTile[1].setSrc(16, 16-2, 16, 16);
 
-    mapTile[2].loadTex("graphic/tiles01.png", ren);
     mapTile[2].setSrc(0, 9*16+4, 16, 16);
 
-    mapTile[3].loadTex("graphic/tiles01.png", ren);
     mapTile[3].setSrc(16, 9*16+4, 16, 16);
 
-    mapTile[4].loadTex("graphic/tiles01.png", ren);
     mapTile[4].setSrc(16, 2*16-2, 16, 16);
 
-    mapTile[5].loadTex("graphic/tiles01.png", ren);
     mapTile[5].setSrc(4*16, 12*16, 16, 16);
 
-    mapTile[6].loadTex("graphic/tiles01.png", ren);
     mapTile[6].setSrc(4*16, 16-2, 16, 16);
 
-    mapTile[7].loadTex("graphic/tiles01.png", ren);
     mapTile[7].setSrc(4*16, 4*16, 16, 16);
 
 
@@ -59,6 +55,10 @@ void Map::loadMap(SDL_Renderer* ren, const char* file_name, Player& player) {
     UpgradePoints.loadFont("font.ttf", 30, ren);
     UpgradePoints.setPosition(990, 0);
 
+    Upgrade.loadFont("font.ttf", 30, ren);
+    Upgrade.setPosition(1280/2 - 430, 48);
+    Upgrade.setText("Press 1 to increase HP by 2, Press 2 to upgrade attack, Press 3 to upgrade speed", {255, 255, 255 ,255}, ren);
+
     srand(time(NULL));
 }
 
@@ -68,7 +68,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
         for (int j = 0; j < 32; j++) {
             SDL_Rect renderQuad = {tile[i][j].x - player.camera.x, tile[i][j].y - player.camera.y, 80, 80};
             SDL_Rect wallRect = {tile[i][j].x, tile[i][j].y, 80, 80};
-            mapTile[tiles[i][j]].render(ren, renderQuad);
+            mapTile[tiles[i][j]].render(ren, renderQuad, player.camera);
             if (tiles[i][j] == 1 || tiles[i][j] == 2 || tiles[i][j] == 3 || tiles[i][j] == 4) {
                 if (player.move_left) {
                     player.LeftOffSet = 22;
@@ -87,6 +87,16 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                 randomSpawnEnemy(crTime, ren);
             }
             if (tiles[i][j] == 5) {
+                if (crTime - trapStartTime >= 400) {
+                    mapTile[tiles[i][j]].setSrc(trap_index*16, 12*16, 16, 16);
+                    trap_index++;
+                    trapStartTime = crTime;
+
+                    if (trap_index > 3) {
+                        trap_index = 1;
+                    }
+                }
+
                 if (player.checkCollision(wallRect)) {
                     if (crTime - player.TrappedStartTime >= 1000) {
                         player.HP --;
@@ -132,6 +142,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
         Wave.destroy();
         if (!enemyAttackUpgraded && wave % 2 == 0) {
             enemyDamage += 1;
+            enemy_base_speed += 1;
             enemyAttackUpgraded = true;
         }
         enemy_base_HP += 1;
@@ -141,9 +152,10 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
     if (isInterval) {
         intervalCount(crTime, ren);
         if (!pointUpgraded) {
-            upgrade_points = upgrade_points + ENEMY_NUMS_WAVE_1/2 + 10;
+            upgrade_points = upgrade_points + ENEMY_NUMS_WAVE_1/2 + 2;
             pointUpgraded = true;
         }
+        Upgrade.render(ren);
     }
     else {
         renderWave(ren);
@@ -237,8 +249,15 @@ void Map::playerUpgrade(SDL_Event& event, Player& player) {
             case SDLK_2:
                 if (!attackUpgraded && upgrade_points >= 5) {
                     player.attackDamage += 1;
-                    upgrade_points -= 5;
+                    upgrade_points -= 3;
                     attackUpgraded = true;
+                }
+                break;
+            case SDLK_3:
+                if (!speedUpgraded && upgrade_points >= 3) {
+                    player.speed += 1;
+                    upgrade_points -= 4;
+                    speedUpgraded = true;
                 }
                 break;
         }
@@ -252,8 +271,13 @@ void Map::playerUpgrade(SDL_Event& event, Player& player) {
                 }
                 break;
             case SDLK_2:
-                if (upgrade_points >= 3) {
+                if (upgrade_points >= 5) {
                     attackUpgraded = false;
+                }
+                break;
+            case SDLK_3:
+                if (upgrade_points >= 3) {
+                    speedUpgraded = false;
                 }
                 break;
         }
