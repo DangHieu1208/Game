@@ -14,7 +14,6 @@ private:
 public:
     SDL_Rect dst;
     Message();
-    ~Message();
     void loadFont(const char* fontFile, int fontSize, SDL_Renderer* ren);
     void setText(const char* text, SDL_Color color, SDL_Renderer* ren);
     void setPosition(int x, int y);

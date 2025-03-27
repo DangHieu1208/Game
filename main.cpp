@@ -4,12 +4,13 @@
 #include "Tile_map.h"
 #include "Enemy.h"
 #include "Button.h"
+#include "Sound.h"
 #include <cstdlib>
 
 enum GameState {menu, playing, quit, pause, instruct, over};
 
 void Init() {
-    srand(time(NULL));
+    srand(time(0));
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         cout << "Failed to initiate SDL: " << SDL_GetError() << endl;
     }
@@ -35,9 +36,15 @@ void Init() {
         cout << "Failed to initiate TTF!" << endl;
         return;
     }
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cout << "Mix_OpenAudio failed: " << Mix_GetError() << std::endl;
+        return;
+    }
 }
 
 void close() {
+    Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -48,6 +55,10 @@ int frameDelay = 1000/60;
 int main(int argc, char* argv[])
 {
     Init();
+
+    Sound playingMusic;
+    playingMusic.loadMusic("sfx/playing.mp3");
+    playingMusic.playMusic(-1);
 
     Message Title;
     Title.loadFont("font.ttf", 200, renderer);
@@ -134,6 +145,7 @@ int main(int argc, char* argv[])
                     if (resumeButton.isClicked(mouseX, mouseY)) {
                         state = playing;
                         isPaused = false;
+                        playingMusic.stopMusic();
                     }
                     if (quitButton.isClicked(mouseX, mouseY)) {
                         state = quit;
@@ -151,6 +163,10 @@ int main(int argc, char* argv[])
                         player_restart.loadTex("graphic/player.png", renderer);
                         player_restart.setDst(100, 100, 120, 120);
                         player = player_restart;
+                        skeleton_base_HP = 20;
+                        skeleton_base_speed = 4;
+                        rat_base_HP = 1;
+                        rat_base_speed = 8;
                         game_map = Map();
                         game_map.loadMap(renderer, "map.txt", player);
                     }
@@ -164,7 +180,7 @@ int main(int argc, char* argv[])
                 player.handleEvent(event);
             }
         }
-        if (state == playing && player.isDied && player.die_index == 8) {
+        if (state == playing && player.isDied && player.die_index == 7) {
                 SDL_Delay(1000);
                 char score[10];
                 sprintf(score, "SCORE: %02d", game_map.score_);

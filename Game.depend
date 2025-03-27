@@ -1,21 +1,24 @@
 # depslib dependency file v1.0
-1741329249 source:c:\project\game\const.cpp
+1742977087 source:c:\project\game\const.cpp
 	"Const.h"
 
-1742875809 c:\project\game\const.h
+1743105563 c:\project\game\const.h
 	<iostream>
+	"Sound.h"
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
+	<SDL_mixer.h>
 	<fstream>
 
-1742925833 source:c:\project\game\main.cpp
+1743097878 source:c:\project\game\main.cpp
 	"Const.h"
 	"Entity.h"
 	"Player.h"
 	"Tile_map.h"
 	"Enemy.h"
 	"Button.h"
+	"Sound.h"
 	<cstdlib>
 
 1742762405 source:c:\project\game\entity.cpp
@@ -26,19 +29,20 @@
 	"Const.h"
 	<cmath>
 
-1742925466 source:c:\project\game\player.cpp
+1743004652 source:c:\project\game\player.cpp
 	"Player.h"
 
-1742910625 c:\project\game\player.h
+1743104872 c:\project\game\player.h
 	"Entity.h"
+	"Sound.h"
 	"Message.h"
 	<math.h>
 
-1742875775 source:c:\project\game\tile_map.cpp
+1743104231 source:c:\project\game\tile_map.cpp
 	"Tile_map.h"
 	<cstdlib>
 
-1742910968 c:\project\game\tile_map.h
+1743105684 c:\project\game\tile_map.h
 	<vector>
 	"Const.h"
 	"Entity.h"
@@ -47,23 +51,24 @@
 	"Message.h"
 	"Boost.h"
 
-1742762419 source:c:\project\game\enemy.cpp
+1743102939 source:c:\project\game\enemy.cpp
 	"Enemy.h"
 	<math.h>
 
-1742860942 c:\project\game\enemy.h
+1743101638 c:\project\game\enemy.h
 	"Entity.h"
 	"Player.h"
+	"Sound.h"
 	"Message.h"
 	<cstdlib>
 
-1742921308 c:\project\game\message.h
+1743049407 c:\project\game\message.h
 	"Const.h"
 	<SDL_ttf.h>
 	<string>
 	<sstream>
 
-1742921839 source:c:\project\game\message.cpp
+1743049394 source:c:\project\game\message.cpp
 	"Message.h"
 	<iostream>
 	<vector>
@@ -81,4 +86,11 @@
 1742874582 c:\project\game\button.h
 	"Entity.h"
 	"Const.h"
+
+1743048426 c:\project\game\sound.h
+	<SDL_mixer.h>
+
+1743048475 source:c:\project\game\sound.cpp
+	"Sound.h"
+	<iostream>
 

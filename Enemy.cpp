@@ -1,15 +1,15 @@
 #include "Enemy.h"
 #include <math.h>
 
-void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave) {
+void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave, int walk_frames, int attack_frames, int die_frames, int walk_y, int attack_y, int die_y, int tile_size) {
     if (player.attack_index == 0) {
         isAttacked = false;
     }
 
     if (crTime - lastUpdateTime >= 80 && !isAttacking && (crTime - attackCoolDown >= 500) && !isDied) {
-        setSrc(animFrame*64, 1*64, 64, 64);
+        setSrc(animFrame*tile_size, walk_y*tile_size, tile_size, tile_size);
         animFrame++;
-        if (animFrame > 7) {
+        if (animFrame > walk_frames) {
             animFrame = 0;
         }
         lastUpdateTime = crTime;
@@ -17,14 +17,17 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
 
     else if (isAttacking && !isDied) {
         if (crTime - lastUpdateTime >= 80) {
-        setSrc(animFrame*64, 2*64, 64, 64);
+        setSrc(animFrame*tile_size, attack_y*tile_size, tile_size, tile_size);
         animFrame++;
-        if (animFrame == 8) {
+        if (animFrame == attack_frames-1) {
+            enemyAttack.playSound();
+        }
+        if (animFrame == attack_frames-1) {
             if (!player.defence) {
                 player.HP -= attackDamage;
             }
         }
-        if (animFrame > 9) {
+        if (animFrame > attack_frames) {
             animFrame = 0;
             isAttacking = false;
             attackCoolDown = crTime;
@@ -34,10 +37,13 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
     }
 
     else if (isDied && crTime - lastUpdateTime >= 120) {
-        setSrc(animFrame * 64, 5 * 64, 64, 64);
+        setSrc(animFrame*tile_size, die_y*tile_size, tile_size, tile_size);
         animFrame++;
-        if (animFrame > 5) {
+        if (animFrame > die_frames) {
+            animFrame = die_frames;
             destroy();
+            EnemyHP.destroy();
+            return;
         }
         lastUpdateTime = crTime;
     }
@@ -48,14 +54,6 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
 
     else if (!isDied) {
         isAttacking = false;
-        if (move_right) {
-            dst.x += speed;
-            if (dst.x > 1000) move_right = false;
-        }
-        else {
-            dst.x -= speed;
-            if (dst.x < 0) move_right = true;
-        }
     }
 
     for (int i = 0; i < 18; i++) {
@@ -77,10 +75,6 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
             lastUpdateTime = crTime;
             score_count = true;
         }
-    }
-
-    if (wave % 2 == 0) {
-        attackDamage = enemyDamage;
     }
 }
 
@@ -137,6 +131,7 @@ void Enemy::renderEnemy(SDL_Renderer* ren, SDL_Rect& camera) {
 
 void Enemy::loadHP(SDL_Renderer* ren) {
     EnemyHP.loadFont("font.ttf", 16, ren);
+    enemyAttack.loadSound("sfx/enemyAttack.wav");
 }
 
 void Enemy::updateHP(SDL_Renderer* ren, Player& player) {
@@ -147,8 +142,9 @@ void Enemy::updateHP(SDL_Renderer* ren, Player& player) {
         EnemyHP.setText(enemyHP, {255, 255, 255, 255}, ren);
         EnemyHP.render(ren);
     }
-    else {
+    if (!isRendered()) {
         EnemyHP.destroy();
+        return;
     }
 }
 

@@ -4,6 +4,13 @@
 void Player::loadHP(SDL_Renderer* ren) {
     PlayerHP.loadFont("font.ttf", 30, ren);
     PlayerHP.setPosition(0, 0);
+    attack.loadSound("sfx/playerAttack.wav");
+    walk.loadSound("sfx/playerWalk.wav");
+}
+
+void Player::loadSound() {
+    attack.loadSound("sfx/playerAttack.wav");
+    walk.loadSound("sfx/playerWalk.wav");
 }
 
 void Player::updateHP(SDL_Renderer* ren) {
@@ -85,6 +92,7 @@ void Player::handleEvent(SDL_Event& e) {
         if (!isAttacking) {
             isAttacking = true;
             AttackStartTime = SDL_GetTicks();
+            attack.playSound();
         }
     }
 
@@ -119,7 +127,7 @@ void Player::update(Uint32 crTime) {
             setSrc(attack_index*56, 56, 56, 56);
             attack_index++;
             AttackStartTime = crTime;
-            if (attack_index > 5) {
+            if (attack_index > 7) {
                 isAttacking = false;
                 attack_index = 0;
             }
@@ -131,14 +139,19 @@ void Player::update(Uint32 crTime) {
             setSrc(move_index*56, 2*56, 56, 56);
             move_index++;
             MoveStartTime = crTime;
-            if (move_index > 5) {
+            if (move_index > 7) {
                 move_index = 0;
             }
+        }
+        if (crTime - WalkSoundStartTime >= 300) {
+            walk.playSound();
+            WalkSoundStartTime = crTime;
         }
         if (move_right) dst.x += speed;
         if (move_left) dst.x -= speed;
         if (go_up) dst.y -= speed;
         if (go_down) dst.y += speed;
+
 
         updateCamera();
     }
@@ -172,7 +185,7 @@ void Player::update(Uint32 crTime) {
             die_index++;
             DieStartTime = crTime;
             if (die_index > 7) {
-                die_index = 8;
+                die_index = 7;
             }
 
         }

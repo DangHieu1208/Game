@@ -46,6 +46,8 @@
 		<Unit filename="Message.h" />
 		<Unit filename="Player.cpp" />
 		<Unit filename="Player.h" />
+		<Unit filename="Sound.cpp" />
+		<Unit filename="Sound.h" />
 		<Unit filename="Tile_map.cpp" />
 		<Unit filename="Tile_map.h" />
 		<Unit filename="main.cpp" />

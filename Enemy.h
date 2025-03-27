@@ -3,26 +3,24 @@
 
 #include "Entity.h"
 #include "Player.h"
+#include "Sound.h"
 #include "Message.h"
 #include <cstdlib>
 
 struct Enemy : public Entity {
 private:
-    int speed = rand() % (enemy_base_speed-(enemy_base_speed-2)+1)+(enemy_base_speed - 2);
     Uint32 lastUpdateTime = SDL_GetTicks();
     Uint32 attackCoolDown = 0;
-    //int animFrame = 0;
     int deathFrame = 0;
 public:
-    Enemy() {;}
+    Sound enemyAttack;
     Message EnemyHP;
-    int HP = rand() % (enemy_base_HP-(enemy_base_HP-5)+1)+(enemy_base_HP-5);
-    int max_HP = HP;
-    int attackDamage;
+    int speed, HP, max_HP;
+    int attackDamage = ENEMY_DAMAGE;
     int animFrame = 0;
     bool move_right = true, isAttacking = false, isDied = false, score_count = false, blocked = false, isAttacked = false;
     void attackPlayer(Uint32 crTime, Player& player);
-    void update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave);
+    void update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave, int walk_frames, int attack_frames, int die_frames, int walk_y, int attack_y, int die_y, int tile_size);
     void renderEnemy(SDL_Renderer* ren, SDL_Rect& camera);
     bool isNearPlayer(Player& player, int range);
     void chasePlayer(Uint32 crTime, Player& player);

@@ -7,17 +7,6 @@ Message::Message() : font(NULL), textTexture(NULL) {
     dst = {0, 0, 0, 0};
 }
 
-Message::~Message() {
-    if (textTexture) {
-        SDL_DestroyTexture(textTexture);
-        textTexture = NULL;
-    }
-    if (font) {
-        TTF_CloseFont(font);
-        font = NULL;
-    }
-}
-
 void Message::loadFont(const char* fontFile, int fontSize, SDL_Renderer* ren) {
 
     font = TTF_OpenFont(fontFile, fontSize);
