@@ -8,7 +8,7 @@
 #include <cstdlib>
 
 enum GameState {menu, playing, quit, pause, instruct, over};
-
+//HIeuDepTRai
 void Init() {
     srand(time(0));
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
