@@ -21,12 +21,12 @@ public:
     Uint32 DieStartTime;
     Uint32 TrappedStartTime;
     int attack_index = 0;
-    int attackDamage = 5;
+    int attackDamage = 50;
     int die_index = 0;
     int defence_abusing = 0;
     bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false, defenceCooldown = false, isDied = false;
     SDL_Rect camera;
-    int HP = 20;
+    int HP = 200;
     int max_HP = HP;
     int speed = 6;
     void renderPlayer(SDL_Renderer* ren);

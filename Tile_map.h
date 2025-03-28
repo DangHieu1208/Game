@@ -8,6 +8,7 @@
 #include "Enemy.h"
 #include "Message.h"
 #include "Boost.h"
+#include "Boss_1.h"
 
 struct Tile : public Entity {
 public:
@@ -26,8 +27,8 @@ private:
     Uint32 trapStartTime = 0;
     Uint32 portalSrartTime = 0;
 public:
-    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false;
-    bool isRatSpawned = false;
+    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false;
+    bool isRatSpawned = false, mapChange = false, isBoss1 = false, isBoss2 = false;
     int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
     int skeleton_left = 3, rats_left = 2, slime_left = 1;
     int skeleton_wave_nums = 3, rat_wave_nums = 2, slime_wave_nums = 1;
@@ -37,6 +38,9 @@ public:
     int upgrade_points = 0, upgrade_points_add;
     int wave = 1;
     int trap_index = 1;
+    Boss boss_1;
+    Boss boss;
+    Boss boss_2;
     Message Wave;
     Message Score;
     Message Time;

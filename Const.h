@@ -26,13 +26,13 @@ static int rat_base_speed = 7;
 static int slime_base_HP = 30;
 static int slime_base_speed = 2;
 
-
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 #define ENEMY_DAMAGE 1
 #define SKELETON_DAMAGE 2
 #define RAT_DAMAGE 1
 #define SLIME_DAMAGE 4
-#define INTERVAL_TIME 15
+#define BOSS_DAMAGE 10
+#define INTERVAL_TIME 3
 
 #endif // CONST_H_INCLUDED

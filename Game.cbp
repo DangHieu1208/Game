@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="Boost.cpp" />
 		<Unit filename="Boost.h" />
+		<Unit filename="Boss_1.cpp" />
+		<Unit filename="Boss_1.h" />
 		<Unit filename="Button.cpp" />
 		<Unit filename="Button.h" />
 		<Unit filename="Const.cpp" />

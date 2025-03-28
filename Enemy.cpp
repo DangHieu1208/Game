@@ -1,13 +1,13 @@
 #include "Enemy.h"
 #include <math.h>
 
-void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave, int walk_frames, int attack_frames, int die_frames, int walk_y, int attack_y, int die_y, int tile_size) {
+void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave, int walk_frames, int attack_frames, int die_frames, int walk_y, int attack_y, int die_y, int tile_size_width, int tile_size_height) {
     if (player.attack_index == 0) {
         isAttacked = false;
     }
 
     if (crTime - lastUpdateTime >= 80 && !isAttacking && (crTime - attackCoolDown >= 500) && !isDied) {
-        setSrc(animFrame*tile_size, walk_y*tile_size, tile_size, tile_size);
+        setSrc(animFrame*tile_size_width, walk_y*tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame > walk_frames) {
             animFrame = 0;
@@ -17,7 +17,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
 
     else if (isAttacking && !isDied) {
         if (crTime - lastUpdateTime >= 80) {
-        setSrc(animFrame*tile_size, attack_y*tile_size, tile_size, tile_size);
+        setSrc(animFrame*tile_size_width, attack_y*tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame == attack_frames-1) {
             enemyAttack.playSound();
@@ -37,10 +37,10 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
     }
 
     else if (isDied && crTime - lastUpdateTime >= 120) {
-        setSrc(animFrame*tile_size, die_y*tile_size, tile_size, tile_size);
+        setSrc(animFrame*tile_size_width, die_y*tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame > die_frames) {
-            animFrame = die_frames;
+            //animFrame = die_frames;
             destroy();
             EnemyHP.destroy();
             return;
