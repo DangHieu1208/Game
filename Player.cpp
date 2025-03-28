@@ -165,7 +165,7 @@ void Player::update(Uint32 crTime) {
                 defence_index = 2;
             }
         }
-        if (crTime - DefenceBeginTime >= 3000) {
+        if (crTime - DefenceBeginTime >= 2000) {
             defence = false;
             defence_index = 0;
         }

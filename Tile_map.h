@@ -26,7 +26,7 @@ private:
     Uint32 trapStartTime = 0;
     Uint32 portalSrartTime = 0;
 public:
-    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false;
+    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false;
     bool isRatSpawned = false;
     int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
     int skeleton_left = 3, rats_left = 2, slime_left = 1;

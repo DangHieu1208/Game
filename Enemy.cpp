@@ -86,7 +86,6 @@ bool Enemy::isNearPlayer(Player& player, int range) {
 }
 
 void Enemy::chasePlayer(Uint32 crTime, Player& player) {
-
     if (!isAttacking && (crTime - attackCoolDown >= 500)) {
         if (dst.x < player.dst.x - 30 - 5) {
             dst.x += speed;
@@ -99,7 +98,7 @@ void Enemy::chasePlayer(Uint32 crTime, Player& player) {
 
         if (dst.y < player.dst.y + 20 - 10) {
                 dst.y += speed;
-            }
+        }
         else if (dst.y > player.dst.y + 20 + 10) {
             dst.y -= speed;
         }

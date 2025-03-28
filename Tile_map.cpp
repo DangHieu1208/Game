@@ -83,9 +83,17 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                 }
             }
             if (tiles[i][j] == 0) {
-                randomSpawnSkeleton(crTime, ren);
-                randomSpawnRat(crTime, ren);
-                randomSpawnSlime(crTime, ren);
+                /*if (wave == 3) {
+                    enemySpawn = false;
+                }
+                else {
+                    enemySpawn = true;
+                }
+                if (enemySpawn) {
+                    randomSpawnSkeleton(crTime, ren);
+                    randomSpawnRat(crTime, ren);
+                    randomSpawnSlime(crTime, ren);
+                }*/
             }
             if (tiles[i][j] == 5) {
                 if (crTime - trapStartTime >= 300) {
@@ -107,6 +115,10 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
             }
         }
     }
+
+    randomSpawnSkeleton(crTime, ren);
+    randomSpawnRat(crTime, ren);
+    randomSpawnSlime(crTime, ren);
 
     for (size_t i = 0; i < rats.size();) {
         rats[i].loadHP(ren);
@@ -163,12 +175,12 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
     UpgradePoints.setText(upgradePoint, {255, 255, 255, 255}, ren);
     UpgradePoints.render(ren);
 
-
-    if (skeleton_killed == skeleton_wave_nums && rat_killed == rat_wave_nums && slime_killed == slime_wave_nums) {
+    if ((skeleton_killed == skeleton_wave_nums && rat_killed == rat_wave_nums && slime_killed == slime_wave_nums) || isBossKilled) {
         isInterval = true;
         hpUpgraded = false;
         attackUpgraded = false;
         pointUpgraded = false;
+        isBossKilled = false;
         Wave.destroy();
         if (wave % 6 == 0) {
             skeleton_base_speed += 1;
@@ -243,10 +255,10 @@ void Map::randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren) {
 
         switch(y) {
             case 1:
-                y1 = 1;
+                y1 = 2;
                 break;
             case 2:
-                y1 = 16;
+                y1 = 15;
                 break;
         }
 
@@ -294,10 +306,10 @@ void Map::randomSpawnRat(Uint32 crTime, SDL_Renderer* ren) {
 
         switch(y) {
             case 1:
-                y1 = 1;
+                y1 = 2;
                 break;
             case 2:
-                y1 = 16;
+                y1 = 15;
                 break;
         }
 
@@ -344,10 +356,10 @@ void Map::randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren) {
 
         switch(y) {
             case 1:
-                y1 = 1;
+                y1 = 2;
                 break;
             case 2:
-                y1 = 16;
+                y1 = 15;
                 break;
         }
 
@@ -384,15 +396,15 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren) {
 
 
     if (intervalTime <= 0) {
-        intervalTime = 4;
+        intervalTime = INTERVAL_TIME;
         if (wave % 2 == 0) {
             skeleton_wave_nums += skeleton_add;
             rat_wave_nums += rat_add;
             slime_wave_nums += slime_add;
         }
-        if (skeleton_wave_nums >= 20) skeleton_wave_nums = 20;
-        if (rat_wave_nums >= 10) rat_wave_nums = 10;
-        if (slime_wave_nums >= 10) slime_wave_nums = 10;
+        if (skeleton_wave_nums >= 8) skeleton_wave_nums = 10;
+        if (rat_wave_nums >= 6) rat_wave_nums = 8;
+        if (slime_wave_nums >= 6) slime_wave_nums = 8;
         skeleton_left = skeleton_wave_nums;
         rats_left = rat_wave_nums;
         slime_left = slime_wave_nums;
