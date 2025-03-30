@@ -11,7 +11,7 @@
 	<SDL_mixer.h>
 	<fstream>
 
-1743171852 source:c:\project\game\main.cpp
+1743324863 source:c:\project\game\main.cpp
 	"Const.h"
 	"Entity.h"
 	"Player.h"
@@ -21,7 +21,7 @@
 	"Sound.h"
 	<cstdlib>
 
-1743192726 source:c:\project\game\entity.cpp
+1743246889 source:c:\project\game\entity.cpp
 	"Entity.h"
 	<cmath>
 
@@ -38,11 +38,11 @@
 	"Message.h"
 	<math.h>
 
-1743194834 source:c:\project\game\tile_map.cpp
+1743325411 source:c:\project\game\tile_map.cpp
 	"Tile_map.h"
 	<cstdlib>
 
-1743196237 c:\project\game\tile_map.h
+1743326191 c:\project\game\tile_map.h
 	<vector>
 	"Const.h"
 	"Entity.h"
@@ -52,11 +52,11 @@
 	"Boost.h"
 	"Boss_1.h"
 
-1743182635 source:c:\project\game\enemy.cpp
+1743249895 source:c:\project\game\enemy.cpp
 	"Enemy.h"
 	<math.h>
 
-1743180168 c:\project\game\enemy.h
+1743249410 c:\project\game\enemy.h
 	"Entity.h"
 	"Player.h"
 	"Sound.h"
@@ -190,10 +190,12 @@
 	"Tile_map.h"
 	<cstdlib>
 
-1743192889 c:\project\game\boss_1.h
+1743320658 c:\project\game\boss_1.h
 	"Enemy.h"
+	"Player.h"
+	<vector>
 
-1743194526 source:c:\project\game\boss_1.cpp
+1743325500 source:c:\project\game\boss_1.cpp
 	"Boss_1.h"
 	<cmath>
 

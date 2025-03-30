@@ -1,4 +1,4 @@
- #ifndef TILE_MAP_H_INCLUDED
+#ifndef TILE_MAP_H_INCLUDED
 #define TILE_MAP_H_INCLUDED
 
 #include <vector>
@@ -27,8 +27,10 @@ private:
     Uint32 trapStartTime = 0;
     Uint32 portalSrartTime = 0;
 public:
+    enum BossType { NONE, BOSS_1, BOSS_2, BOSS_3 };
+    BossType currentBoss = NONE;
     bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false;
-    bool isRatSpawned = false, mapChange = false, isBoss1 = false, isBoss2 = false;
+    bool isRatSpawned = false, mapChange = false, isMap1 = false, isMap2 = false;
     int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
     int skeleton_left = 3, rats_left = 2, slime_left = 1;
     int skeleton_wave_nums = 3, rat_wave_nums = 2, slime_wave_nums = 1;
@@ -38,23 +40,27 @@ public:
     int upgrade_points = 0, upgrade_points_add;
     int wave = 1;
     int trap_index = 1;
-    Boss boss_1;
+    int fire_index = 0;
     Boss boss;
+    Boss boss_1;
     Boss boss_2;
+    Boss boss_3;
     Message Wave;
     Message Score;
     Message Time;
     Message UpgradePoints;
     Message Upgrade;
     vector<Enemy> skeletons, rats, slimes;
-    void loadMap(SDL_Renderer* ren, const char* file_name, Player& player);
+    void loadMap(SDL_Renderer* ren, const char* file_name);
+    void loadTexture(SDL_Renderer* ren);
     void renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime);
+    void loadEntities(SDL_Renderer* ren, Player& player);
     void print();
     void updateScore(SDL_Renderer* ren, Enemy& enemy);
     void randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnRat(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren);
-    void intervalCount(Uint32 crTime, SDL_Renderer* ren);
+    void intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player);
     void renderWave(SDL_Renderer* ren);
     void playerUpgrade(SDL_Event& event, Player& player);
 };

@@ -12,6 +12,8 @@ private:
     Uint32 lastUpdateTime = SDL_GetTicks();
     Uint32 attackCoolDown = 0;
     int deathFrame = 0;
+    int attackRange = 70;
+    int stoppingZoneRadius = 60;
 public:
     Sound enemyAttack;
     Message EnemyHP;

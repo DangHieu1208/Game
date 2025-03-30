@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
     Sound playingMusic;
     playingMusic.loadMusic("sfx/playing.mp3");
-    playingMusic.playMusic(-1);
+    //playingMusic.playMusic(-1);
 
     Message Title;
     Title.loadFont("font.ttf", 200, renderer);
@@ -114,7 +114,9 @@ int main(int argc, char* argv[])
     player.setDst(100, 100, 120, 120);
 
     Map game_map;
-    game_map.loadMap(renderer, "map.txt", player);
+    game_map.loadMap(renderer, "map3.txt");
+    game_map.loadEntities(renderer, player);
+    game_map.loadTexture(renderer);
 
     game_map.print();
 
@@ -168,7 +170,7 @@ int main(int argc, char* argv[])
                         rat_base_HP = 1;
                         rat_base_speed = 8;
                         game_map = Map();
-                        game_map.loadMap(renderer, "map.txt", player);
+                        game_map.loadMap(renderer, "map.txt");
                     }
                     if (quitButton.isClicked(mouseX, mouseY)) {
                         state = quit;

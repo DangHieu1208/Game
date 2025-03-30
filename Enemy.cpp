@@ -85,7 +85,7 @@ bool Enemy::isNearPlayer(Player& player, int range) {
     return distance < range;
 }
 
-void Enemy::chasePlayer(Uint32 crTime, Player& player) {
+/*void Enemy::chasePlayer(Uint32 crTime, Player& player) {
     if (!isAttacking && (crTime - attackCoolDown >= 500)) {
         if (dst.x < player.dst.x - 30 - 5) {
             dst.x += speed;
@@ -112,6 +112,44 @@ void Enemy::chasePlayer(Uint32 crTime, Player& player) {
 
     if (isAttacking) {
         move_right = true;
+    }
+}*/
+
+void Enemy::chasePlayer(Uint32 crTime, Player& player) {
+    if (!isAttacking && (crTime - attackCoolDown >= 500)) {
+
+        int dx = dst.x - player.dst.x;
+        int dy = dst.y - player.dst.y;
+        int distance = sqrt(dx * dx + dy * dy);
+
+        if (distance > stoppingZoneRadius) {
+            if (dst.x < player.dst.x - 5) {
+                dst.x += speed;
+                move_right = true;
+            } else if (dst.x > player.dst.x + 5) {
+                dst.x -= speed;
+                move_right = false;
+            }
+
+            if (dst.y < player.dst.y - 10) {
+                dst.y += speed;
+            } else if (dst.y > player.dst.y + 10) {
+                dst.y -= speed;
+            }
+        }
+
+        if (distance <= stoppingZoneRadius && crTime - attackCoolDown >= 500) {
+            isAttacking = true;
+        }
+    }
+
+    float distanceToPlayer = sqrt(pow(dst.x - player.dst.x, 2) + pow(dst.y - player.dst.y, 2));
+    if (distanceToPlayer > attackRange) {
+        isAttacking = false;
+    }
+
+    if (isAttacking) {
+        move_right = (player.dst.x > dst.x);
     }
 }
 

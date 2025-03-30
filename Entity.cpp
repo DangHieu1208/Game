@@ -2,10 +2,10 @@
 #include <cmath>
 
 bool Entity::isRendered() {
-    if (tex) {
-        return true;
+    if (!tex) {
+        return false;
     }
-    return false;
+    return true;
 }
 void Entity::setSrc(int x, int y, int w, int h) {
     src.x = x;
