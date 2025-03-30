@@ -30,7 +30,7 @@ public:
     enum BossType { NONE, BOSS_1, BOSS_2, BOSS_3 };
     BossType currentBoss = NONE;
     bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false;
-    bool isRatSpawned = false, mapChange = false, isMap1 = false, isMap2 = false;
+    bool isRatSpawned = false, mapChange = false, isMap1 = false, isMap2 = false, killAllSlimes;
     int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
     int skeleton_left = 3, rats_left = 2, slime_left = 1;
     int skeleton_wave_nums = 3, rat_wave_nums = 2, slime_wave_nums = 1;
@@ -41,6 +41,8 @@ public:
     int wave = 1;
     int trap_index = 1;
     int fire_index = 0;
+    int fire_index_1 = 0;
+    Entity Fire;
     Boss boss;
     Boss boss_1;
     Boss boss_2;
@@ -60,6 +62,7 @@ public:
     void randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnRat(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren);
+    void randomSpawnSlimeBoss(Uint32 crTime, SDL_Renderer* ren);
     void intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player);
     void renderWave(SDL_Renderer* ren);
     void playerUpgrade(SDL_Event& event, Player& player);

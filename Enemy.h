@@ -15,6 +15,8 @@ private:
     int attackRange = 70;
     int stoppingZoneRadius = 60;
 public:
+    Uint32 lastingTime;
+    int attack_count = 0;
     Sound enemyAttack;
     Message EnemyHP;
     int speed, HP, max_HP;

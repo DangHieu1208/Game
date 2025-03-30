@@ -28,11 +28,18 @@ static int slime_base_speed = 2;
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
+
+#define TILE_SIZE 80
+
 #define ENEMY_DAMAGE 1
 #define SKELETON_DAMAGE 2
 #define RAT_DAMAGE 1
 #define SLIME_DAMAGE 4
-#define BOSS_DAMAGE 10
-#define INTERVAL_TIME 3
+
+#define BOSS_DAMAGE 8
+#define BOSS_HP 100
+#define BOSS_SPEED 8
+
+#define INTERVAL_TIME 15
 
 #endif // CONST_H_INCLUDED

@@ -9,12 +9,12 @@ void Boss::Boss_1_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
         LeftOffSet = 80;
     }
 
-    /*if (dst.x < player.dst.x) {
+    if (dst.x < player.dst.x) {
         move_right = true;
     }
     else if (dst.x > player.dst.x) {
         move_right = false;
-    }*/
+    }
 
     if (player.attack_index == 0) {
         isAttacked = false;
@@ -33,10 +33,10 @@ void Boss::Boss_1_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
         if (crTime - Boss_1_lastUpdatetime >= 80) {
         setSrc(animFrame*tile_size_width, attack_y*tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
-        if (animFrame == attack_frames-1 && isNearPlayer(player, 500)) {
+        if (animFrame == attack_frames-1 && isNearPlayer(player, 260)) {
             enemyAttack.playSound();
         }
-        if (animFrame == attack_frames-1 && isNearPlayer(player, 720)) {
+        if (animFrame == attack_frames-1 && isNearPlayer(player, 260)) {
             if (!player.defence) {
                 player.HP -= attackDamage;
             }
@@ -146,12 +146,6 @@ void Boss::updateHP(SDL_Renderer* ren, SDL_Rect camera, int OffSetX, int OffSetY
 void Boss::Boss_2_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32],
                         int& wave, int walk_frames, int attack_frames, int die_frames,
                         int walk_y, int attack_y, int die_y, int tile_size_width, int tile_size_height) {
-    /*if (dst.x > player.dst.x) {
-        move_right = true;
-    }
-    else if (dst.x < player.dst.x) {
-        move_right = false;
-    }*/
 
     if (player.attack_index == 0) {
         isAttacked = false;
@@ -190,7 +184,7 @@ void Boss::Boss_2_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
             animFrame++;
             if (animFrame == attack_frames - 1) {
                 enemyAttack.playSound();
-                if (!player.defence && isNearPlayer(player, 240)) {
+                if (!player.defence && (player.dst.x >= dst.x && player.dst.x <= dst.x + dst.w) && (player.dst.y > dst.y && player.dst.y < dst.y + dst.h)) {
                     player.HP -= attackDamage;
                 }
             }
@@ -286,10 +280,8 @@ void Boss::Boss_3_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
         if (crTime - Boss_1_lastUpdatetime >= 80) {
         setSrc(animFrame*tile_size_width, attack_y*tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
-        if (animFrame == attack_frames-1 && isNearPlayer(player, 160)) {
+        if (animFrame == attack_frames-1 && ((player.dst.x < dst.x + dst.w && player.dst.x > dst.x) || (player.dst.x > dst.x && player.dst.x < dst.x + dst.w)) && (player.dst.y > dst.y && player.dst.y < dst.y + dst.h)) {
             enemyAttack.playSound();
-        }
-        if (animFrame == attack_frames-1 && isNearPlayer(player, 160)) {
             if (!player.defence) {
                 player.HP -= attackDamage;
             }
@@ -342,7 +334,12 @@ void Boss::Boss_3_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
         Boss_1_ReachDest = false;
 
 
-        dst_x = player.dst.x;
+        if (dst.x + dst.w < player.dst.x) {
+            dst_x = player.dst.x - dst.w + 200;
+        }
+        else if (dst.x > player.dst.x + player.dst.w) {
+            dst_x = player.dst.x + player.dst.w - 200;
+        }
         dst_y = player.dst.y - (dst.h - player.dst.h);
     }
 
@@ -381,6 +378,9 @@ void Boss::Boss_3_Update(Uint32 crTime, Player& player, int mapTiles[18][32], SD
 }
 
 void Boss::Boss_2_Cloud(Uint32 crTime, SDL_Renderer* ren) {
+    if (isDestroyed) {
+        return;
+    }
     if (crTime - Boss_2_randomAttackSpawnTime >= 3000) {
         Enemy cloud;
         cloud.loadTex("graphic/Boss_2.png", ren);
@@ -398,17 +398,19 @@ void Boss::Boss_2_Cloud(Uint32 crTime, SDL_Renderer* ren) {
     }
 }
 
-/*void Boss::Boss_2_CloudAttack(SDL_Renderer* ren, Player& player) {
-    for (size_t i = 0; i < Cloud.size();) {
-        Cloud[i].loadHP(ren);
-        Cloud[i].update(SDL_GetTicks(), player, tiles, tile, wave, 7, 7, 7, 6, 6, 6, 140, 93);
-        Cloud[i].renderEnemy(ren, player.camera);
-        Cloud[i].updateHP(ren, player);
-        if ((Cloud[i].isDestroyed && Cloud[i].animFrame >= 7) || !Cloud[i].isRendered()) {
-            Cloud.erase(Cloud.begin() + i);
+void Boss::Boss_3_FireAttack(Uint32 crTime, SDL_Renderer* ren, Player& player) {
+    if (crTime - Boss_3_randomFireSpawnTime >= 3000) {
+        Enemy fire;
+        fire.loadTex("graphic/Fire.png", ren);
+        if (!fire.isRendered()) {
+            return;
         }
-        else {
-            i++;
-        }
+        fire.setSrc(0, 0, 96, 96);
+        fire.setDst(player.dst.x, player.dst.y, 96, 96);
+        Fire.push_back(fire);
+        Boss_3_randomFireSpawnTime = crTime;
+        fire.lastingTime = crTime;
     }
-}*/
+}
+
+

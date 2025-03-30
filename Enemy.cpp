@@ -66,7 +66,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
         }
     }
 
-    if (!isDied && !isAttacked && player.isAttacking && isCollided(player) && player.attack_index == 5) {
+    if (!isDied && !isAttacked && player.isAttacking && checkCollision(player.dst) && player.attack_index == 5) {
         HP -= player.attackDamage;
         isAttacked = true;
         if (HP <= 0) {
