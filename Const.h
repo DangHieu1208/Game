@@ -40,9 +40,9 @@ static bool isPaused = false;
 #define CHASE_RANGE 1470
 
 #define BOSS_DAMAGE 8
-#define BOSS_HP 200
+#define BOSS_HP 250
 #define BOSS_SPEED 9
 
-#define INTERVAL_TIME 5
+#define INTERVAL_TIME 11
 
 #endif // CONST_H_INCLUDED

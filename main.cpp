@@ -183,11 +183,13 @@ int main(int argc, char* argv[])
                         Player player_restart;
                         player_restart.loadTex("graphic/player/player.png", renderer);
                         player_restart.setDst(100, 100, 120, 120);
+                        player_restart.loadSound();
                         player = player_restart;
                         Map new_game_map;
                         new_game_map.loadMap(renderer, "map/map1.txt");
                         new_game_map.loadEntities(renderer, player);
                         new_game_map.loadTexture(renderer);
+                        new_game_map.loadEnemyTexture(renderer);
                         game_map = new_game_map;
                     }
                     if (quitButton.isClicked(mouseX, mouseY)) {

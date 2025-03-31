@@ -22,9 +22,9 @@ public:
     Sound walk;
     Message PlayerHP;
     bool move_right = false, move_left = false, facing_right = true, facing_left = false, isAttacking = false, go_up = false, go_down = false, defence = false, defenceCooldown = false, isDied = false;
-    int attack_index = 0, attackDamage = 30;
+    int attack_index = 0, attackDamage = 8;
     int die_index = 0;
-    int HP = 1000;
+    int HP = 100;
     int max_HP = HP;
     int speed = 6;
     void renderPlayer(SDL_Renderer* ren);

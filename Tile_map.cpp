@@ -54,7 +54,7 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     boss_1.attackDamage = BOSS_DAMAGE;
     boss_1.speed = BOSS_SPEED;
     boss_1.HP = BOSS_HP;
-    boss_1.max_HP = BOSS_HP;
+    boss_1.max_HP = boss_1.HP;
     boss_1.TopOffSet = 160;
 
     boss_2.loadTex("graphic/boss/Boss_2.png", ren);
@@ -63,7 +63,7 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     boss_2.attackDamage = BOSS_DAMAGE;
     boss_2.speed = BOSS_SPEED;
     boss_2.HP = BOSS_HP + 100;
-    boss_2.max_HP = BOSS_HP + 100;
+    boss_2.max_HP = boss_2.HP;
     boss_2.TopOffSet = 160;
     boss_2.LeftOffSet = 80;
     boss_2.move_right = true;
@@ -73,7 +73,7 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     boss_3.setDst(12 * TILE_SIZE, 6 * TILE_SIZE, 576, 320);
     boss_3.attackDamage = BOSS_DAMAGE;
     boss_3.speed = BOSS_SPEED;
-    boss_3.HP = BOSS_HP + 100;
+    boss_3.HP = boss_3.HP;
     boss_3.max_HP = BOSS_HP + 100;
     boss_3.TopOffSet = 130;
     boss_3.LeftOffSet = 250;
@@ -297,7 +297,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                     boss.Cloud[i].update(SDL_GetTicks(), player, tiles, tile, wave, 7, 7, 7, 6, 6, 6, 140, 93);
                     boss.Cloud[i].renderEnemy(ren, player.camera);
                     boss.Cloud[i].updateHP(ren, player);
-                    if ((boss.Cloud[i].isDestroyed && boss.Cloud[i].animFrame >= 7) || !boss.Cloud[i].isRendered()) {
+                    if ((boss.Cloud[i].isDestroyed && boss.Cloud[i].animFrame >= 7)) {
                         boss.Cloud.erase(boss.Cloud.begin() + i);
                     } else {
                         i++;
@@ -714,9 +714,18 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             if (wave % 5 == 1) {
                 this->skeleton_base_speed += 1;
                 this->rat_base_speed += 1;
+                if (this->skeleton_base_speed > 8) {
+                    this->skeleton_base_speed = 8;
+                }
+                if (this->rat_base_speed > 10) {
+                    this->skeleton_base_speed = 10;
+                }
             }
             if (wave % 5 == 1) {
                 this->slime_base_speed += 1;
+                if (this->slime_base_speed > 6) {
+                    this->slime_base_speed = 6;
+                }
             }
             this->skeleton_base_HP += 2;
             this->rat_base_HP += 2;
@@ -784,9 +793,9 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             player.dst.x = 9 * TILE_SIZE;
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_1;
-            boss.max_HP += (boss_1_wave_index - 1) * 80;
-            boss.HP = boss.max_HP;
-            boss.attackDamage += (boss_1_wave_index - 1) * 3;
+            boss.HP += (boss_1_wave_index - 1) * 100;
+            boss.max_HP = boss.HP;
+            boss.attackDamage += (boss_1_wave_index - 1) * 4;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
@@ -797,13 +806,14 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             boss_1_wave_index += 3;
         }
 
-        else if (wave == boss_2_wave_index * 2) {
+        else if (wave == boss_2_wave_index * 5) {
             player.dst.x = 7 * TILE_SIZE;
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_2;
             boss.loadEnemyBossTexture(cloud);
-            boss.HP += (boss_2_wave_index - 1) * 80;
-            boss.attackDamage += (boss_2_wave_index - 1) * 3;
+            boss.HP += (boss_2_wave_index - 2) * 100;
+            boss.max_HP = boss.HP;
+            boss.attackDamage += (boss_2_wave_index - 2) * 4;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
@@ -819,8 +829,9 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_3;
             boss.loadEnemyBossTexture(fire);
-            boss.HP += (boss_3_wave_index - 1) * 80;
-            boss.attackDamage += (boss_3_wave_index - 1) * 3;
+            boss.HP += (boss_3_wave_index - 3) * 100;
+            boss.max_HP = boss.HP;
+            boss.attackDamage += (boss_3_wave_index - 3) * 4;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
