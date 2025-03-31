@@ -105,3 +105,8 @@ void Entity::solveCollision(SDL_Rect& wall) {
         dst.y += minOverlap;
     }
 }
+
+void Entity::setTexture(SDL_Texture* tex_) {
+    SDL_Texture* temp = tex_;
+    tex = temp;
+}

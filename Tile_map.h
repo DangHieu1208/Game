@@ -18,13 +18,19 @@ struct Map {
 private:
     int tiles[MAP_HEIGHT][MAP_WIDTH];
     SDL_Rect tile[MAP_HEIGHT][MAP_WIDTH];
-    Tile mapTile[7];
+    Tile mapTile[MAP_TILES_NUMS];
     Uint32 lastSkeletonSpawnTime = 0;
     Uint32 lastRatSpawnTime = 0;
     Uint32 lastSlimeSpawnTime = 0;
     Uint32 lastSlimeSpawnTime_2 = 0;
     Uint32 intervalStartTime = 0;
     Uint32 trapStartTime = 0;
+    SDL_Texture* skeleton;
+    SDL_Texture* rat;
+    SDL_Texture* slime;
+    SDL_Texture* slime_boss;
+    SDL_Texture* cloud;
+    SDL_Texture* fire;
     Uint32 portalSrartTime = 0;
     int boss_1_wave_index = 1;
     int boss_2_wave_index = 2;
@@ -40,32 +46,22 @@ public:
     enum MapType {MAP_1, MAP_2, MAP_3};
     BossType currentBoss = NONE;
     MapType currentMap = MAP_1;
-    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false;
-    bool isRatSpawned = false, mapChange = false, isMap1 = false, isMap2 = false, killAllSlimes;
-    int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
-    int skeleton_left = 3, rats_left = 2, slime_left = 1;
-    int skeleton_wave_nums = 3, rat_wave_nums = 2, slime_wave_nums = 1;
-    int skeleton_add = 1, rat_add = 1, slime_add = 1;
-    int intervalTime = INTERVAL_TIME;
-    int score_ = 0;
-    int upgrade_points = 0, upgrade_points_add;
-    int wave = 1;
+    bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false,
+        speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false, killAllSlimes;
+    int skeleton_killed = 0, rat_killed = 0, slime_killed = 0,
+        skeleton_left = 3, rats_left = 2, slime_left = 1,
+        skeleton_wave_nums = 3, rat_wave_nums = 2, slime_wave_nums = 1,
+        skeleton_add = 1, rat_add = 1, slime_add = 1;
+    int intervalTime = INTERVAL_TIME, score_ = 0, upgrade_points = 0, upgrade_points_add, wave = 1;
     int trap_index = 1;
-    Boss boss;
-    Boss boss_1;
-    Boss boss_2;
-    Boss boss_3;
-    Message Wave;
-    Message Score;
-    Message Time;
-    Message UpgradePoints;
-    Message Upgrade;
-    Message BossWaveWarn;
+    Boss boss, boss_1, boss_2, boss_3;
+    Message Wave, Score, Time, UpgradePoints, Upgrade, BossWaveWarn;
     vector<Enemy> skeletons, rats, slimes, slimes_boss;
     void loadMap(SDL_Renderer* ren, const char* file_name);
     void loadTexture(SDL_Renderer* ren);
     void renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime);
     void loadEntities(SDL_Renderer* ren, Player& player);
+    void loadEnemyTexture(SDL_Renderer* ren);
     void print();
     void updateScore(SDL_Renderer* ren, Enemy& enemy);
     void randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren);

@@ -157,8 +157,8 @@ void Boss::Boss_2_Update(Uint32 crTime, Player& player, int mapTiles[MAP_HEIGHT]
         animFrame = 0;
         Boss_MoveStartTime = crTime;
 
-        int x = rand() % 20 + 4;
-        int y = rand() % 12 + 1;
+        int x = rand() % (26 - 5 + 1) + 5;
+        int y = rand() % (13 - 4 + 1) + 4;
         dst_x = x * 80;
         dst_y = y * 80;
 
@@ -183,7 +183,7 @@ void Boss::Boss_2_Update(Uint32 crTime, Player& player, int mapTiles[MAP_HEIGHT]
             animFrame++;
             if (animFrame == attack_frames - 1) {
                 enemyAttack.playSound();
-                if (!player.defence && (player.dst.x >= dst.x && player.dst.x <= dst.x + dst.w) && (player.dst.y > dst.y && player.dst.y < dst.y + dst.h)) {
+                if (!player.defence && checkCollision(player.dst)) {
                     player.HP -= attackDamage;
                     int x = rand() % 29 + 1;
                     int y = rand() % 13 + 1;
@@ -379,7 +379,7 @@ void Boss::Boss_2_Cloud(Uint32 crTime, SDL_Renderer* ren) {
     }
     if (crTime - Boss_2_randomAttackSpawnTime >= 3000) {
         Enemy cloud;
-        cloud.loadTex("graphic/boss/Boss_2.png", ren);
+        cloud.setTexture(enemyBoss);
         if (!cloud.isRendered()) {
             return;
         }
@@ -400,7 +400,7 @@ void Boss::Boss_3_FireAttack(Uint32 crTime, SDL_Renderer* ren, Player& player) {
     }
     if (crTime - Boss_3_randomFireSpawnTime >= 4000) {
         Enemy fire;
-        fire.loadTex("graphic/Fire.png", ren);
+        fire.setTexture(enemyBoss);
         if (!fire.isRendered()) {
             return;
         }
@@ -410,6 +410,10 @@ void Boss::Boss_3_FireAttack(Uint32 crTime, SDL_Renderer* ren, Player& player) {
         Boss_3_randomFireSpawnTime = crTime;
         fire.lastingTime = crTime;
     }
+}
+
+void Boss::loadEnemyBossTexture(SDL_Texture* tex) {
+    enemyBoss = tex;
 }
 
 

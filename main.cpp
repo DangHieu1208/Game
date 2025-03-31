@@ -132,6 +132,7 @@ int main(int argc, char* argv[])
     game_map.loadMap(renderer, "map/map1.txt");
     game_map.loadEntities(renderer, player);
     game_map.loadTexture(renderer);
+    game_map.loadEnemyTexture(renderer);
 
     Uint32 frameStart = SDL_GetTicks();
     while (running) {

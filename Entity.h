@@ -22,7 +22,8 @@ public:
     void renderFlip(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera);
     bool checkCollision(SDL_Rect& wall);
     void solveCollision(SDL_Rect& wall);
-    void destroy() {if (tex) SDL_DestroyTexture(tex); tex = NULL; isDestroyed = true;}
+    void setTexture(SDL_Texture* tex_);
+    void destroy() {if (tex) tex = NULL; isDestroyed = true;}
 
 };
 

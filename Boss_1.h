@@ -12,6 +12,7 @@ private:
     Uint32 Boss_lastUpdatetime;
     Uint32 Boss_2_randomAttackSpawnTime;
     Uint32 Boss_3_randomFireSpawnTime;
+    SDL_Texture* enemyBoss;
 public:
     bool Boss_ReachDest = true, isTeleporting;
     int dst_x, dst_y;
@@ -34,6 +35,8 @@ public:
     void Boss_2_Cloud(Uint32 crTime, SDL_Renderer* ren);
 
     void Boss_3_FireAttack(Uint32 crTime, SDL_Renderer* ren, Player& player);
+
+    void loadEnemyBossTexture(SDL_Texture* tex);
 };
 
 

@@ -19,7 +19,8 @@ public:
     Sound enemyAttack;
     Message EnemyHP;
     int attack_count = 0;
-    int speed, HP, max_HP;
+    int speed, max_HP;
+    int HP = max_HP;
     int attackDamage = ENEMY_DAMAGE;
     int animFrame = 0;
     bool move_right = true, isAttacking = false, isDied = false, score_count = false, blocked = false, isAttacked = false;

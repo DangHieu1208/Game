@@ -22,7 +22,7 @@ void Map::loadMap(SDL_Renderer* ren, const char* file_name) {
 }
 
 void Map::loadTexture(SDL_Renderer* ren) {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < MAP_TILES_NUMS - 1; i++) {
         mapTile[i].loadTex("graphic/tiles/tiles01.png", ren);
         if (!mapTile[i].isRendered()) {
             cout << "Failed to load texture for mapTile[" << i << "]" << endl;
@@ -91,7 +91,7 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     UpgradePoints.setPosition(990, 0);
 
     Upgrade.loadFont("font/font.ttf", 30, ren);
-    Upgrade.setPosition(45, 48);
+    Upgrade.setPosition(40, 48);
     Upgrade.setText("Press 1 to increase HP by 3 [2 points], Press 2 to upgrade attack [5 points], Press 3 to upgrade speed [3 points]", {255, 255, 255, 255}, ren);
 
     BossWaveWarn.loadFont("font/font.ttf", 30, ren);
@@ -99,6 +99,69 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     BossWaveWarn.setText("BOSS WAVE COMING", red, ren);
 }
 
+void Map::loadEnemyTexture(SDL_Renderer* ren) {
+    SDL_Surface* surface;
+
+    surface = IMG_Load("graphic/enemy/skeleton.png");
+    if (surface) {
+        skeleton = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load skeleton texture: " << IMG_GetError() << endl;
+    }
+
+    surface = IMG_Load("graphic/enemy/rat.png");
+    if (surface) {
+        rat = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load rat texture: " << IMG_GetError() << endl;
+    }
+
+    surface = IMG_Load("graphic/enemy/slime.png");
+    if (surface) {
+        slime = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load slime texture: " << IMG_GetError() << endl;
+    }
+
+    surface = IMG_Load("graphic/enemy/slime_2.png");
+    if (surface) {
+        slime_boss = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load slime_2 texture: " << IMG_GetError() << endl;
+    }
+
+    surface = IMG_Load("graphic/boss/Boss_2.png");
+    if (surface) {
+        cloud = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load cloud texture: " << IMG_GetError() << endl;
+    }
+
+    surface = IMG_Load("graphic/Fire.png");
+    if (surface) {
+        fire = SDL_CreateTextureFromSurface(ren, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    else {
+        cout << "Failed to load fire texture: " << IMG_GetError() << endl;
+    }
+}
 
 void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
     for (int i = 0; i < 18; i++) {
@@ -309,23 +372,14 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
             isBossKilled = true;
             switch (currentBoss) {
                 case BOSS_1:
-                    boss_1.attackDamage += 8;
-                    boss_1.HP *= 2;
-                    boss_1.max_HP *= 2;
                     killAllSlimes = true;
                     currentMap = MAP_2;
                     break;
                 case BOSS_2:
-                    boss_2.attackDamage += 8;
-                    boss_2.HP *= 2;
-                    boss_2.max_HP *= 2;
                     currentMap = MAP_3;
                     isBossWave = false;
                     break;
                 case BOSS_3:
-                    boss_3.attackDamage += 8;
-                    boss_3.HP *= 2;
-                    boss_3.max_HP *= 2;
                     killAllSlimes = true;
                     currentMap = MAP_1;
                     break;
@@ -527,18 +581,18 @@ void Map::randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren) {
         }
 
         if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5) {
-            Enemy slime;
-            slime.loadTex("graphic/enemy/slime.png", ren);
-            if (!slime.isRendered()) {
+            Enemy slime_temp;
+            slime_temp.setTexture(slime);
+            if (!slime_temp.isRendered()) {
                 return;
             }
-            slime.setSrc(0, 64, 64, 64);
-            slime.setDst(x1 * 80, y1 * 80, 120, 120);
-            slime.attackDamage = SLIME_DAMAGE + wave/4;
-            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
-            slime.HP = this->slime_base_HP;
-            slime.max_HP = slime.HP;
-            slimes.push_back(slime);
+            slime_temp.setSrc(0, 64, 64, 64);
+            slime_temp.setDst(x1 * 80, y1 * 80, 120, 120);
+            slime_temp.attackDamage = SLIME_DAMAGE + wave/4;
+            slime_temp.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime_temp.HP = this->slime_base_HP;
+            slime_temp.max_HP = slime_temp.HP;
+            slimes.push_back(slime_temp);
             lastSlimeSpawnTime = crTime;
             slime_left--;
         }
@@ -576,18 +630,18 @@ void Map::randomSpawnSlimeBoss(Uint32 crTime, SDL_Renderer* ren) {
         }
 
         if (tiles[x][y] == 0 || tiles[x][y] == 5) {
-            Enemy slime;
-            slime.loadTex("graphic/enemy/slime.png", ren);
-            if (!slime.isRendered()) {
+            Enemy slime_temp;
+            slime_temp.setTexture(slime);
+            if (!slime_temp.isRendered()) {
                 return;
             }
-            slime.setSrc(0,64, 64, 64);
-            slime.setDst(x1*80, y1*80, 120, 120);
-            slime.attackDamage = SLIME_DAMAGE + wave/4;
-            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
-            slime.HP = this->slime_base_HP;
-            slime.max_HP = slime.HP;
-            slimes.push_back(slime);
+            slime_temp.setSrc(0,64, 64, 64);
+            slime_temp.setDst(x1*80, y1*80, 120, 120);
+            slime_temp.attackDamage = SLIME_DAMAGE + wave/4;
+            slime_temp.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime_temp.HP = this->slime_base_HP;
+            slime_temp.max_HP = slime_temp.HP;
+            slimes.push_back(slime_temp);
             lastSlimeSpawnTime = crTime;
         }
         else return;
@@ -624,18 +678,18 @@ void Map::randomSpawnSlimeBoss_2(Uint32 crTime, SDL_Renderer* ren) {
         }
 
         if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5 || tiles[x1][y1] == 6) {
-            Enemy slime;
-            slime.loadTex("graphic/enemy/slime_2.png", ren);
-            if (!slime.isRendered()) {
+            Enemy slime_temp;
+            slime_temp.setTexture(slime_boss);
+            if (!slime_temp.isRendered()) {
                 return;
             }
-            slime.setSrc(0 , 0, 32, 25);
-            slime.setDst(x1 * 80, y1 * 80, 120, 120);
-            slime.attackDamage = SLIME_DAMAGE + wave/4;
-            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
-            slime.HP = this->slime_base_HP;
-            slime.max_HP = slime.HP;
-            slimes_boss.push_back(slime);
+            slime_temp.setSrc(0 , 0, 32, 25);
+            slime_temp.setDst(x1 * 80, y1 * 80, 120, 120);
+            slime_temp.attackDamage = SLIME_DAMAGE + wave/4;
+            slime_temp.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime_temp.HP = this->slime_base_HP;
+            slime_temp.max_HP = slime_temp.HP;
+            slimes_boss.push_back(slime_temp);
             lastSlimeSpawnTime_2 = crTime;
         }
         else return;
@@ -730,8 +784,9 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             player.dst.x = 9 * TILE_SIZE;
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_1;
-            boss.loadTex("graphic/boss/Boss_1.png", ren);
-            boss.HP = boss_1.max_HP;
+            boss.max_HP += (boss_1_wave_index - 1) * 80;
+            boss.HP = boss.max_HP;
+            boss.attackDamage += (boss_1_wave_index - 1) * 3;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
@@ -742,12 +797,13 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             boss_1_wave_index += 3;
         }
 
-        else if (wave == boss_2_wave_index * 5) {
+        else if (wave == boss_2_wave_index * 2) {
             player.dst.x = 7 * TILE_SIZE;
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_2;
-            boss.loadTex("graphic/boss/Boss_2.png", ren);
-            boss.HP = boss_2.max_HP;
+            boss.loadEnemyBossTexture(cloud);
+            boss.HP += (boss_2_wave_index - 1) * 80;
+            boss.attackDamage += (boss_2_wave_index - 1) * 3;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
@@ -762,8 +818,9 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
             player.dst.x = 7 * TILE_SIZE;
             player.dst.y = 8 * TILE_SIZE;
             boss = boss_3;
-            boss.loadTex("graphic/boss/Boss_3.png", ren);
-            boss.HP = boss_3.max_HP;
+            boss.loadEnemyBossTexture(fire);
+            boss.HP += (boss_3_wave_index - 1) * 80;
+            boss.attackDamage += (boss_3_wave_index - 1) * 3;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
