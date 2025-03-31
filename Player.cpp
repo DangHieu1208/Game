@@ -1,11 +1,8 @@
 #include "Player.h"
 
-
 void Player::loadHP(SDL_Renderer* ren) {
-    PlayerHP.loadFont("font.ttf", 30, ren);
+    PlayerHP.loadFont("font/font.ttf", 30, ren);
     PlayerHP.setPosition(0, 0);
-    attack.loadSound("sfx/playerAttack.wav");
-    walk.loadSound("sfx/playerWalk.wav");
 }
 
 void Player::loadSound() {
@@ -19,13 +16,13 @@ void Player::updateHP(SDL_Renderer* ren) {
     }
     char playerHP[10];
     sprintf(playerHP, "HP:%01d/%01d", HP, max_HP);
-    PlayerHP.setText(playerHP, {255, 255, 255, 255}, ren);
+    PlayerHP.setText(playerHP, white, ren);
     PlayerHP.render(ren);
 }
 
 void Player::updateCamera() {
-    int mapWidth = 32*80;
-    int mapHeight = 18*80;
+    int mapWidth = MAP_WIDTH * TILE_SIZE;
+    int mapHeight = MAP_HEIGHT * TILE_SIZE;
 
     camera.x = dst.x - WINDOW_WIDTH/2 + dst.w/2;
     camera.y = dst.y - WINDOW_HEIGHT/2 + dst.h/2;
@@ -44,7 +41,6 @@ void Player::updateCamera() {
         camera.y = mapHeight - WINDOW_HEIGHT;
     }
 }
-
 
 void Player::handleEvent(SDL_Event& e) {
 
@@ -124,7 +120,7 @@ void Player::update(Uint32 crTime) {
 
     if (isAttacking && !isDied) {
         if (crTime - AttackStartTime >= 50) {
-            setSrc(attack_index*56, 56, 56, 56);
+            setSrc(attack_index * PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
             attack_index++;
             AttackStartTime = crTime;
             if (attack_index > 7) {
@@ -136,7 +132,7 @@ void Player::update(Uint32 crTime) {
 
     else if ((move_left || move_right || go_up || go_down) && !isDied) {
         if (crTime - MoveStartTime >= 80) {
-            setSrc(move_index*56, 2*56, 56, 56);
+            setSrc(move_index * PLAYER_TILE_SIZE, 2 * PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
             move_index++;
             MoveStartTime = crTime;
             if (move_index > 7) {
@@ -158,7 +154,7 @@ void Player::update(Uint32 crTime) {
 
     else if (defence && !isDied) {
         if (crTime - DefenceStartTime >= 80) {
-            setSrc(defence_index*56, 10*56, 56, 56);
+            setSrc(defence_index * PLAYER_TILE_SIZE, 10 * PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
             defence_index++;
             DefenceStartTime = crTime;
             if (defence_index > 2) {
@@ -181,7 +177,7 @@ void Player::update(Uint32 crTime) {
         go_down = false;
         go_up = false;
         if (crTime - DieStartTime >= 100) {
-            setSrc(die_index*56, 6*56, 56, 56);
+            setSrc(die_index * PLAYER_TILE_SIZE, 6 * PLAYER_TILE_SIZE, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
             die_index++;
             DieStartTime = crTime;
             if (die_index > 7) {
@@ -193,7 +189,7 @@ void Player::update(Uint32 crTime) {
 
     else {
         if (crTime - StandStartTime >= 60) {
-            setSrc(stand_index*56, 0, 56, 56);
+            setSrc(stand_index * PLAYER_TILE_SIZE, 0, PLAYER_TILE_SIZE, PLAYER_TILE_SIZE);
             stand_index++;
             StandStartTime = crTime;
             if (stand_index > 5) {
@@ -205,6 +201,7 @@ void Player::update(Uint32 crTime) {
         updateCamera();
     }
 }
+
 
 void Player::renderPlayer(SDL_Renderer* ren) {
     SDL_Rect renderQuad = {dst.x - camera.x, dst.y - camera.y, dst.w, dst.h};

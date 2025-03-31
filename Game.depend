@@ -2,8 +2,9 @@
 1742977087 source:c:\project\game\const.cpp
 	"Const.h"
 
-1743348554 c:\project\game\const.h
+1743426812 c:\project\game\const.h
 	<iostream>
+	"Message.h"
 	"Sound.h"
 	<SDL.h>
 	<SDL_image.h>
@@ -11,7 +12,7 @@
 	<SDL_mixer.h>
 	<fstream>
 
-1743361272 source:c:\project\game\main.cpp
+1743427767 source:c:\project\game\main.cpp
 	"Const.h"
 	"Entity.h"
 	"Player.h"
@@ -21,55 +22,53 @@
 	"Sound.h"
 	<cstdlib>
 
-1743246889 source:c:\project\game\entity.cpp
+1743423291 source:c:\project\game\entity.cpp
 	"Entity.h"
 	<cmath>
 
-1742762372 c:\project\game\entity.h
+1743419303 c:\project\game\entity.h
 	"Const.h"
 	<cmath>
 
-1743171852 source:c:\project\game\player.cpp
+1743427980 source:c:\project\game\player.cpp
 	"Player.h"
 
-1743359908 c:\project\game\player.h
+1743428745 c:\project\game\player.h
 	"Entity.h"
 	"Sound.h"
 	"Message.h"
 	<math.h>
 
-1743360964 source:c:\project\game\tile_map.cpp
+1743433637 source:c:\project\game\tile_map.cpp
 	"Tile_map.h"
 	<cstdlib>
 
-1743338541 c:\project\game\tile_map.h
+1743427018 c:\project\game\tile_map.h
 	<vector>
 	"Const.h"
 	"Entity.h"
 	"Player.h"
 	"Enemy.h"
 	"Message.h"
-	"Boost.h"
 	"Boss_1.h"
 
-1743350787 source:c:\project\game\enemy.cpp
+1743424332 source:c:\project\game\enemy.cpp
 	"Enemy.h"
 	<math.h>
 
-1743339830 c:\project\game\enemy.h
+1743414512 c:\project\game\enemy.h
 	"Entity.h"
 	"Player.h"
 	"Sound.h"
 	"Message.h"
 	<cstdlib>
 
-1743049407 c:\project\game\message.h
-	"Const.h"
+1743427879 c:\project\game\message.h
 	<SDL_ttf.h>
 	<string>
 	<sstream>
 
-1743049394 source:c:\project\game\message.cpp
+1743427891 source:c:\project\game\message.cpp
 	"Message.h"
 	<iostream>
 	<vector>
@@ -81,7 +80,7 @@
 1742763825 source:c:\project\game\boost.cpp
 	"Boost.h"
 
-1742874753 source:c:\project\game\button.cpp
+1743420359 source:c:\project\game\button.cpp
 	"Button.h"
 
 1742874582 c:\project\game\button.h
@@ -91,7 +90,7 @@
 1743048426 c:\project\game\sound.h
 	<SDL_mixer.h>
 
-1743048475 source:c:\project\game\sound.cpp
+1743423103 source:c:\project\game\sound.cpp
 	"Sound.h"
 	<iostream>
 
@@ -190,12 +189,12 @@
 	"Tile_map.h"
 	<cstdlib>
 
-1743338339 c:\project\game\boss_1.h
+1743422258 c:\project\game\boss_1.h
 	"Enemy.h"
 	"Player.h"
 	<vector>
 
-1743360369 source:c:\project\game\boss_1.cpp
+1743422539 source:c:\project\game\boss_1.cpp
 	"Boss_1.h"
 	<cmath>
 

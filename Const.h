@@ -2,6 +2,7 @@
 #define CONST_H_INCLUDED
 
 #include <iostream>
+#include "Message.h"
 #include "Sound.h"
 #include <SDL.h>
 #include <SDL_image.h>
@@ -14,32 +15,34 @@ static SDL_Window* window;
 static SDL_Renderer* renderer;
 static SDL_Event event;
 
+static SDL_Color white = {255, 255, 255, 255};
+static SDL_Color red = {255, 0, 0, 255};
+
 static int mouseX, mouseY;
 static Uint32 currentTime;
 static bool running = true;
 static bool isPaused = false;
 
-static int skeleton_base_HP = 20;
-static int skeleton_base_speed = 4;
-static int rat_base_HP = 1;
-static int rat_base_speed = 7;
-static int slime_base_HP = 30;
-static int slime_base_speed = 2;
-
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 
 #define TILE_SIZE 80
+#define MAP_WIDTH 32
+#define MAP_HEIGHT 18
+#define MAP_TILES_NUMS 7
+
+#define PLAYER_TILE_SIZE 56
 
 #define ENEMY_DAMAGE 1
 #define SKELETON_DAMAGE 2
 #define RAT_DAMAGE 1
 #define SLIME_DAMAGE 4
+#define CHASE_RANGE 1470
 
 #define BOSS_DAMAGE 8
-#define BOSS_HP 100
-#define BOSS_SPEED 8
+#define BOSS_HP 200
+#define BOSS_SPEED 9
 
-#define INTERVAL_TIME 15
+#define INTERVAL_TIME 5
 
 #endif // CONST_H_INCLUDED

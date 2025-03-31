@@ -7,6 +7,7 @@ bool Entity::isRendered() {
     }
     return true;
 }
+
 void Entity::setSrc(int x, int y, int w, int h) {
     src.x = x;
     src.y = y;
@@ -52,14 +53,6 @@ void Entity::renderFlip(SDL_Renderer* ren, SDL_Rect dst_, SDL_Rect camera) {
 
     if (dst.x + dst.w < camera.x || dst.x > camera.x || dst.y + dst.h < camera.y || dst.y > camera.y) return;
 }
-
-bool Entity::isCollided(Entity& A) {
-    if (SDL_HasIntersection(&dst, &A.dst)) {
-        return true;
-    }
-    return false;
-}
-
 
 bool Entity::checkCollision(SDL_Rect& wall) {
     SDL_Rect entityRect = dst;

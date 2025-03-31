@@ -1,13 +1,15 @@
 #include "Enemy.h"
 #include <math.h>
 
-void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect mapTileRects[18][32], int& wave, int walk_frames, int attack_frames, int die_frames, int walk_y, int attack_y, int die_y, int tile_size_width, int tile_size_height) {
+void Enemy::update(Uint32 crTime, Player& player, int mapTiles[MAP_HEIGHT][MAP_WIDTH], SDL_Rect mapTileRects[MAP_HEIGHT][MAP_WIDTH],
+                    int& wave, int walk_frames, int attack_frames, int die_frames,
+                    int walk_y, int attack_y, int die_y, int tile_size_width, int tile_size_height) {
     if (player.attack_index == 0) {
         isAttacked = false;
     }
 
     if (crTime - lastUpdateTime >= 80 && !isAttacking && (crTime - attackCoolDown >= 500) && !isDied) {
-        setSrc(animFrame*tile_size_width, walk_y*tile_size_height, tile_size_width, tile_size_height);
+        setSrc(animFrame * tile_size_width, walk_y * tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame > walk_frames) {
             animFrame = 0;
@@ -17,7 +19,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
 
     else if (isAttacking && !isDied) {
         if (crTime - lastUpdateTime >= 80) {
-        setSrc(animFrame*tile_size_width, attack_y*tile_size_height, tile_size_width, tile_size_height);
+        setSrc(animFrame * tile_size_width, attack_y * tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame == attack_frames-1) {
             enemyAttack.playSound();
@@ -37,10 +39,9 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
     }
 
     else if (isDied && crTime - lastUpdateTime >= 120) {
-        setSrc(animFrame*tile_size_width, die_y*tile_size_height, tile_size_width, tile_size_height);
+        setSrc(animFrame * tile_size_width, die_y * tile_size_height, tile_size_width, tile_size_height);
         animFrame++;
         if (animFrame > die_frames) {
-            //animFrame = die_frames;
             destroy();
             EnemyHP.destroy();
             return;
@@ -48,7 +49,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
         lastUpdateTime = crTime;
     }
 
-    if (isNearPlayer(player, 1470) && !isDied) {
+    if (isNearPlayer(player, CHASE_RANGE) && !isDied) {
         chasePlayer(crTime, player);
     }
 
@@ -56,8 +57,8 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
         isAttacking = false;
     }
 
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j < 32; j++) {
+    for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAP_WIDTH; j++) {
             if (mapTiles[i][j] == 1 || mapTiles[i][j] == 2 || mapTiles[i][j] == 3 || mapTiles[i][j] == 4) {
                 if (checkCollision(mapTileRects[i][j])) {
                     solveCollision(mapTileRects[i][j], player);
@@ -76,6 +77,7 @@ void Enemy::update(Uint32 crTime, Player& player, int mapTiles[18][32], SDL_Rect
             score_count = true;
         }
     }
+
 }
 
 bool Enemy::isNearPlayer(Player& player, int range) {
@@ -84,36 +86,6 @@ bool Enemy::isNearPlayer(Player& player, int range) {
     float distance = sqrt(dx*dx + dy*dy);
     return distance < range;
 }
-
-/*void Enemy::chasePlayer(Uint32 crTime, Player& player) {
-    if (!isAttacking && (crTime - attackCoolDown >= 500)) {
-        if (dst.x < player.dst.x - 30 - 5) {
-            dst.x += speed;
-            move_right = true;
-        }
-        else if (dst.x > player.dst.x - 30 + 5) {
-            dst.x -= speed;
-            move_right = false;
-        }
-
-        if (dst.y < player.dst.y + 20 - 10) {
-                dst.y += speed;
-        }
-        else if (dst.y > player.dst.y + 20 + 10) {
-            dst.y -= speed;
-        }
-    }
-
-    if (abs(dst.x - (player.dst.x - 30)) < 20 && abs(dst.y - player.dst.y - 20) < 20 && crTime - attackCoolDown >= 500) {
-        isAttacking = true;
-    } else if (abs(dst.x - (player.dst.x - 30)) > 20 || abs(dst.y - player.dst.y - 20) > 20) {
-        isAttacking = false;
-    }
-
-    if (isAttacking) {
-        move_right = true;
-    }
-}*/
 
 void Enemy::chasePlayer(Uint32 crTime, Player& player) {
     if (!isAttacking && (crTime - attackCoolDown >= 500)) {
@@ -167,7 +139,7 @@ void Enemy::renderEnemy(SDL_Renderer* ren, SDL_Rect& camera) {
 }
 
 void Enemy::loadHP(SDL_Renderer* ren) {
-    EnemyHP.loadFont("font.ttf", 16, ren);
+    EnemyHP.loadFont("font/font.ttf", 16, ren);
     enemyAttack.loadSound("sfx/enemyAttack.wav");
 }
 
@@ -176,7 +148,7 @@ void Enemy::updateHP(SDL_Renderer* ren, Player& player) {
     sprintf(enemyHP, "%01d/%01d", HP, max_HP);
     if (!isDied) {
         EnemyHP.setPosition(dst.x - player.camera.x + 50, dst.y - player.camera.y);
-        EnemyHP.setText(enemyHP, {255, 255, 255, 255}, ren);
+        EnemyHP.setText(enemyHP, white, ren);
         EnemyHP.render(ren);
     }
     if (!isRendered()) {

@@ -7,7 +7,6 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Message.h"
-#include "Boost.h"
 #include "Boss_1.h"
 
 struct Tile : public Entity {
@@ -17,18 +16,30 @@ public:
 
 struct Map {
 private:
-    int tiles[18][32];
-    SDL_Rect tile[18][32];
-    Tile mapTile[20];
+    int tiles[MAP_HEIGHT][MAP_WIDTH];
+    SDL_Rect tile[MAP_HEIGHT][MAP_WIDTH];
+    Tile mapTile[7];
     Uint32 lastSkeletonSpawnTime = 0;
     Uint32 lastRatSpawnTime = 0;
     Uint32 lastSlimeSpawnTime = 0;
+    Uint32 lastSlimeSpawnTime_2 = 0;
     Uint32 intervalStartTime = 0;
     Uint32 trapStartTime = 0;
     Uint32 portalSrartTime = 0;
+    int boss_1_wave_index = 1;
+    int boss_2_wave_index = 2;
+    int boss_3_wave_index = 3;
+    int skeleton_base_HP = 20;
+    int skeleton_base_speed = 4;
+    int rat_base_HP = 1;
+    int rat_base_speed = 7;
+    int slime_base_HP = 30;
+    int slime_base_speed = 2;
 public:
     enum BossType { NONE, BOSS_1, BOSS_2, BOSS_3 };
+    enum MapType {MAP_1, MAP_2, MAP_3};
     BossType currentBoss = NONE;
+    MapType currentMap = MAP_1;
     bool hpUpgraded = false, attackUpgraded = false, alliesUpgraded = false, isInterval = false, pointUpgraded = false, speedUpgraded = false, enemySpawn = true, isBossKilled = false, isBossWave = false, enemyUpgraded = false;
     bool isRatSpawned = false, mapChange = false, isMap1 = false, isMap2 = false, killAllSlimes;
     int skeleton_killed = 0, rat_killed = 0, slime_killed = 0;
@@ -40,9 +51,6 @@ public:
     int upgrade_points = 0, upgrade_points_add;
     int wave = 1;
     int trap_index = 1;
-    int fire_index = 0;
-    int fire_index_1 = 0;
-    Entity Fire;
     Boss boss;
     Boss boss_1;
     Boss boss_2;
@@ -52,7 +60,8 @@ public:
     Message Time;
     Message UpgradePoints;
     Message Upgrade;
-    vector<Enemy> skeletons, rats, slimes;
+    Message BossWaveWarn;
+    vector<Enemy> skeletons, rats, slimes, slimes_boss;
     void loadMap(SDL_Renderer* ren, const char* file_name);
     void loadTexture(SDL_Renderer* ren);
     void renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime);
@@ -63,6 +72,7 @@ public:
     void randomSpawnRat(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren);
     void randomSpawnSlimeBoss(Uint32 crTime, SDL_Renderer* ren);
+    void randomSpawnSlimeBoss_2(Uint32 crTime, SDL_Renderer* ren);
     void intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player);
     void renderWave(SDL_Renderer* ren);
     void playerUpgrade(SDL_Event& event, Player& player);

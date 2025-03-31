@@ -3,46 +3,17 @@
 #include <vector>
 using namespace std;
 
-Message::Message() : font(NULL), textTexture(NULL) {
-    dst = {0, 0, 0, 0};
-}
-
 void Message::loadFont(const char* fontFile, int fontSize, SDL_Renderer* ren) {
-
     font = TTF_OpenFont(fontFile, fontSize);
-    if (!font) {
-        std::cout << "Failed to load font: " << TTF_GetError() << std::endl;
-        return;
-    }
 }
 
 void Message::setText(const char* text_, SDL_Color color, SDL_Renderer* ren) {
-    if (!font) {
-        std::cout << "Font not loaded!" << std::endl;
-        return;
-    }
-
-    text = text_;
-
-    if (textTexture) {
-        SDL_DestroyTexture(textTexture);
-        textTexture = NULL;
-    }
-
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text, color);
-    if (!textSurface) {
-        std::cout << "Failed to create text surface: " << TTF_GetError() << std::endl;
-        return;
-    }
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text_, color);
 
     textTexture = SDL_CreateTextureFromSurface(ren, textSurface);
-    if (!textTexture) {
-        std::cout << "Failed to create text texture: " << SDL_GetError() << std::endl;
-    }
 
     dst.w = textSurface->w;
     dst.h = textSurface->h;
-
     SDL_FreeSurface(textSurface);
 }
 
@@ -52,9 +23,7 @@ void Message::setPosition(int x, int y) {
 }
 
 void Message::render(SDL_Renderer* ren) {
-    if (textTexture) {
-        SDL_RenderCopy(ren, textTexture, NULL, &dst);
-    }
+    SDL_RenderCopy(ren, textTexture, NULL, &dst);
 }
 
 void Message::multiLinesRender(const char* text, SDL_Color color, SDL_Renderer* ren) {

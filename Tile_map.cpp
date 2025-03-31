@@ -5,25 +5,25 @@ void Map::loadMap(SDL_Renderer* ren, const char* file_name) {
     ifstream file(file_name);
     int n;
 
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j < 32; j++) {
+    for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAP_WIDTH; j++) {
             file >> tiles[i][j];
         }
     }
 
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j <32; j++) {
-            tile[i][j].x = j*80;
-            tile[i][j].y = i*80;
-            tile[i][j].w = 80;
-            tile[i][j].h = 80;
+    for (int i = 0; i < MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAP_WIDTH; j++) {
+            tile[i][j].x = j * TILE_SIZE;
+            tile[i][j].y = i * TILE_SIZE;
+            tile[i][j].w = TILE_SIZE;
+            tile[i][j].h = TILE_SIZE;
         }
     }
 }
 
 void Map::loadTexture(SDL_Renderer* ren) {
     for (int i = 0; i < 6; i++) {
-        mapTile[i].loadTex("graphic/tiles01.png", ren);
+        mapTile[i].loadTex("graphic/tiles/tiles01.png", ren);
         if (!mapTile[i].isRendered()) {
             cout << "Failed to load texture for mapTile[" << i << "]" << endl;
         }
@@ -41,15 +41,14 @@ void Map::loadTexture(SDL_Renderer* ren) {
 
     mapTile[5].setSrc(4*16, 12*16, 16, 16);
 
-    mapTile[6].loadTex("graphic/Magma.png", ren);
+    mapTile[6].loadTex("graphic/tiles/Magma.png", ren);
     mapTile[6].setSrc(0, 0, 96, 96);
-
 }
 
 void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     player.loadHP(ren);
 
-    boss_1.loadTex("graphic/Boss_1.png", ren);
+    boss_1.loadTex("graphic/boss/Boss_1.png", ren);
     boss_1.setSrc(0, 0, 160, 128);
     boss_1.setDst(16 * TILE_SIZE, 9 * TILE_SIZE, 320, 256);
     boss_1.attackDamage = BOSS_DAMAGE;
@@ -58,43 +57,48 @@ void Map::loadEntities(SDL_Renderer* ren, Player& player) {
     boss_1.max_HP = BOSS_HP;
     boss_1.TopOffSet = 160;
 
-    boss_2.loadTex("graphic/Boss_2.png", ren);
+    boss_2.loadTex("graphic/boss/Boss_2.png", ren);
     boss_2.setSrc(0, 0, 140, 93);
     boss_2.setDst(16 * TILE_SIZE, 9 * TILE_SIZE, 280, 186);
     boss_2.attackDamage = BOSS_DAMAGE;
-    boss_2.speed = BOSS_SPEED + 100;
-    boss_2.HP = BOSS_HP;
-    boss_2.max_HP = BOSS_HP;
+    boss_2.speed = BOSS_SPEED;
+    boss_2.HP = BOSS_HP + 100;
+    boss_2.max_HP = BOSS_HP + 100;
     boss_2.TopOffSet = 160;
     boss_2.LeftOffSet = 80;
     boss_2.move_right = true;
 
-    boss_3.loadTex("graphic/Boss_3.png", ren);
+    boss_3.loadTex("graphic/boss/Boss_3.png", ren);
     boss_3.setSrc(0, 0, 288, 160);
-    boss_3.setDst(16 * TILE_SIZE, 9 * TILE_SIZE, 576, 320);
+    boss_3.setDst(12 * TILE_SIZE, 6 * TILE_SIZE, 576, 320);
     boss_3.attackDamage = BOSS_DAMAGE;
-    boss_3.speed = BOSS_SPEED + 200;
-    boss_3.HP = BOSS_HP;
-    boss_3.max_HP = BOSS_HP;
+    boss_3.speed = BOSS_SPEED;
+    boss_3.HP = BOSS_HP + 100;
+    boss_3.max_HP = BOSS_HP + 100;
     boss_3.TopOffSet = 130;
     boss_3.LeftOffSet = 250;
 
-    Score.loadFont("font.ttf", 30, ren);
-    Score.setPosition(1190, 0);
+    Score.loadFont("font/font.ttf", 30, ren);
+    Score.setPosition(1150, 0);
 
-    Time.loadFont("font.ttf", 30, ren);
+    Time.loadFont("font/font.ttf", 30, ren);
     Time.setPosition(1280 / 2 - 10, 0);
 
-    Wave.loadFont("font.ttf", 30, ren);
+    Wave.loadFont("font/font.ttf", 30, ren);
     Wave.setPosition(1280 / 2 - 50, 0);
 
-    UpgradePoints.loadFont("font.ttf", 30, ren);
+    UpgradePoints.loadFont("font/font.ttf", 30, ren);
     UpgradePoints.setPosition(990, 0);
 
-    Upgrade.loadFont("font.ttf", 30, ren);
-    Upgrade.setPosition(1280 / 2 - 430, 48);
-    Upgrade.setText("Press 1 to increase HP by 2, Press 2 to upgrade attack, Press 3 to upgrade speed", {255, 255, 255, 255}, ren);
+    Upgrade.loadFont("font/font.ttf", 30, ren);
+    Upgrade.setPosition(45, 48);
+    Upgrade.setText("Press 1 to increase HP by 3 [2 points], Press 2 to upgrade attack [5 points], Press 3 to upgrade speed [3 points]", {255, 255, 255, 255}, ren);
+
+    BossWaveWarn.loadFont("font/font.ttf", 30, ren);
+    BossWaveWarn.setPosition (1280/2 - 90, 96);
+    BossWaveWarn.setText("BOSS WAVE COMING", red, ren);
 }
+
 
 void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
     for (int i = 0; i < 18; i++) {
@@ -144,6 +148,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
         }
     }
 
+
     if (enemySpawn) {
         randomSpawnSkeleton(crTime, ren);
         randomSpawnRat(crTime, ren);
@@ -151,7 +156,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
 
         for (size_t i = 0; i < rats.size();) {
             rats[i].loadHP(ren);
-            rats[i].update(SDL_GetTicks(), player, tiles, tile, wave, 7, 8, 5, 1, 5, 7, 64, 64);
+            rats[i].update(crTime, player, tiles, tile, wave, 7, 8, 5, 1, 5, 7, 64, 64);
             rats[i].renderEnemy(ren, player.camera);
             rats[i].updateHP(ren, player);
             updateScore(ren, rats[i]);
@@ -165,7 +170,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
 
         for (size_t i = 0; i < skeletons.size();) {
             skeletons[i].loadHP(ren);
-            skeletons[i].update(SDL_GetTicks(), player, tiles, tile, wave, 7, 9, 5, 1, 2, 5, 64, 64);
+            skeletons[i].update(crTime, player, tiles, tile, wave, 7, 9, 5, 1, 2, 5, 64, 64);
             skeletons[i].renderEnemy(ren, player.camera);
             skeletons[i].updateHP(ren, player);
             updateScore(ren, skeletons[i]);
@@ -179,7 +184,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
 
         for (size_t i = 0; i < slimes.size();) {
             slimes[i].loadHP(ren);
-            slimes[i].update(SDL_GetTicks(), player, tiles, tile, wave, 11, 12, 12, 2, 0, 1, 64, 64);
+            slimes[i].update(crTime, player, tiles, tile, wave, 11, 12, 12, 2, 0, 1, 64, 64);
             slimes[i].renderEnemy(ren, player.camera);
             slimes[i].updateHP(ren, player);
             updateScore(ren, slimes[i]);
@@ -197,10 +202,13 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
         switch (currentBoss) {
             case BOSS_1:
                 killAllSlimes = false;
+
                 boss.Boss_1_Update(SDL_GetTicks(), player, tiles, tile, wave, 7, 12, 8, 1, 2, 6, 160, 128);
                 boss.renderEnemy(ren, player.camera);
                 boss.updateHP(ren, player.camera, 140, 100);
+
                 randomSpawnSlimeBoss(crTime, ren);
+
                 for (size_t i = 0; i < slimes.size();) {
                     slimes[i].loadHP(ren);
                     slimes[i].update(SDL_GetTicks(), player, tiles, tile, wave, 11, 12, 12, 2, 0, 1, 64, 64);
@@ -217,7 +225,9 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                     }
                 }
                 break;
+
             case BOSS_2:
+
                 boss.Boss_2_Cloud(crTime, ren);
                 for (size_t i = 0; i < boss.Cloud.size();) {
                     boss.Cloud[i].loadHP(ren);
@@ -230,27 +240,34 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                         i++;
                     }
                 }
+
                 boss.Boss_2_Update(SDL_GetTicks(), player, tiles, tile, wave, 7, 7, 7, 0, 2, 7, 140, 93);
                 boss.renderEnemy(ren, player.camera);
                 boss.updateHP(ren, player.camera, boss.move_right ? 190 : 50, 50);
                 break;
+
             case BOSS_3:
+                killAllSlimes = false;
+
                 boss.Boss_3_Update(SDL_GetTicks(), player, tiles, tile, wave, 11, 14, 14, 1, 2, 4, 288, 160);
+                boss.renderEnemy(ren, player.camera);
+                boss.updateHP(ren, player.camera, boss.move_right ? 240 : 280, 130);
+
                 boss.Boss_3_FireAttack(crTime, ren, player);
+                randomSpawnSlimeBoss_2(crTime, ren);
+
                 for (size_t i = 0; i < boss.Fire.size();) {
 
                     boss.Fire[i].renderEnemy(ren, player.camera);
 
-
-                    static Uint32 lastDamageTime = SDL_GetTicks();
-                    if (crTime - lastDamageTime >= 500) {
+                    if (crTime - boss.Fire[i].lastingTime >= 500) {
                         if (player.checkCollision(boss.Fire[i].dst)) {
                             if(boss.Fire[i].attack_count != 0) {
                                 player.HP--;
                             }
                         }
                         boss.Fire[i].attack_count++;
-                        lastDamageTime = crTime;
+                        boss.Fire[i].lastingTime = crTime;
                     }
 
 
@@ -265,49 +282,81 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
                         i++;
                     }
                 }
-                boss.renderEnemy(ren, player.camera);
-                boss.updateHP(ren, player.camera, boss.move_right ? 240 : 280, 130);
+
+                for (size_t i = 0; i < slimes_boss.size();) {
+                    slimes_boss[i].loadHP(ren);
+                    slimes_boss[i].update(SDL_GetTicks(), player, tiles, tile, wave, 7, 7, 4, 0, 1, 2, 32, 25);
+                    slimes_boss[i].renderEnemy(ren, player.camera);
+                    slimes_boss[i].updateHP(ren, player);
+                    if ((slimes_boss[i].isDestroyed && slimes_boss[i].animFrame >= 12) || !slimes_boss[i].isRendered()) {
+                        slimes_boss.erase(slimes_boss.begin() + i);
+                        if (player.HP < player.max_HP && !isBossKilled) {
+                            player.HP += 1;
+                        }
+
+                    } else {
+                        i++;
+                    }
+                }
                 break;
             default:
                 break;
         }
+
         updateScore(ren, boss);
+
         if (boss.isDestroyed && !isBossKilled) {
             isBossKilled = true;
             switch (currentBoss) {
                 case BOSS_1:
-                    boss_1.attackDamage += 10;
-                    boss_1.HP += 200;
+                    boss_1.attackDamage += 8;
+                    boss_1.HP *= 2;
+                    boss_1.max_HP *= 2;
                     killAllSlimes = true;
+                    currentMap = MAP_2;
                     break;
                 case BOSS_2:
-                    boss_2.attackDamage += 10;
-                    boss_2.HP += 200;
+                    boss_2.attackDamage += 8;
+                    boss_2.HP *= 2;
+                    boss_2.max_HP *= 2;
+                    currentMap = MAP_3;
+                    isBossWave = false;
                     break;
                 case BOSS_3:
-                    boss_3.attackDamage += 10;
-                    boss_3.HP += 200;
+                    boss_3.attackDamage += 8;
+                    boss_3.HP *= 2;
+                    boss_3.max_HP *= 2;
+                    killAllSlimes = true;
+                    currentMap = MAP_1;
                     break;
                 default: break;
             }
         }
     }
 
-    if (killAllSlimes && currentBoss == BOSS_1) {
-        for (size_t i = 0; i < slimes.size(); i++) {
-            slimes[i].isDied = true;
-            slimes[i].animFrame = 0;
+    if (killAllSlimes) {
+        if (currentBoss == BOSS_1) {
+            for (size_t i = 0; i < slimes.size(); i++) {
+                slimes[i].isDied = true;
+                slimes[i].animFrame = 0;
+            }
+        }
+        else if (currentBoss == BOSS_3) {
+            for (size_t i = 0; i < slimes_boss.size(); i++) {
+                slimes_boss[i].isDied = true;
+                slimes_boss[i].animFrame = 0;
+            }
         }
     }
 
     char score[10];
     sprintf(score, "SCORE:%02d", score_);
-    Score.setText(score, {255, 255, 255, 255}, ren);
+    Score.setText(score, white, ren);
     Score.render(ren);
 
     char upgradePoint[10];
     sprintf(upgradePoint, "Point:%01d", upgrade_points);
-    UpgradePoints.setText(upgradePoint, {255, 255, 255, 255}, ren);
+    UpgradePoints.setText(upgradePoint, white, ren);
     UpgradePoints.render(ren);
 
     if ((skeleton_killed == skeleton_wave_nums && rat_killed == rat_wave_nums && slime_killed == slime_wave_nums) || isBossKilled) {
@@ -328,6 +377,7 @@ void Map::renderMap(SDL_Renderer* ren, Player& player, Uint32 crTime) {
     player.updateHP(ren);
 }
 
+
 void Map::updateScore(SDL_Renderer* ren, Enemy& enemy) {
     if (enemy.score_count) {
         score_++;
@@ -344,8 +394,9 @@ void Map::print() {
  }
 }
 
+
 void Map::randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren) {
-    if (crTime - lastSkeletonSpawnTime >= 1000) {
+    if (crTime - lastSkeletonSpawnTime >= 1500) {
         if (skeleton_left == 0) {
             return;
         }
@@ -367,25 +418,25 @@ void Map::randomSpawnSkeleton(Uint32 crTime, SDL_Renderer* ren) {
 
         switch(y) {
             case 1:
-                y1 = 2;
+                y1 = 14;
                 break;
             case 2:
                 y1 = 15;
                 break;
         }
 
-        if (tiles[x][y] == 0) {
+        if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5) {
             Enemy skeleton;
-            skeleton.loadTex("graphic/enemy.png", ren);
+            skeleton.loadTex("graphic/enemy/skeleton.png", ren);
 
             if (!skeleton.isRendered()) {
                 return;
             }
-            skeleton.setSrc(0,64, 64, 64);
-            skeleton.setDst(x1*80, y1*80, 100, 100);
+            skeleton.setSrc(0, 64, 64, 64);
+            skeleton.setDst(x1 * 80, y1 * 80, 100, 100);
             skeleton.attackDamage = SKELETON_DAMAGE + wave/4;
-            skeleton.speed = rand() % (skeleton_base_speed-(skeleton_base_speed-1)+1)+(skeleton_base_speed - 1);
-            skeleton.HP = rand() % (skeleton_base_HP-(skeleton_base_HP-5)+1)+(skeleton_base_HP-5);
+            skeleton.speed = rand() % (this->skeleton_base_speed - (this->skeleton_base_speed - 1) + 1)+(this->skeleton_base_speed - 1);
+            skeleton.HP = this->skeleton_base_HP;
             skeleton.max_HP = skeleton.HP;
             skeletons.push_back(skeleton);
             lastSkeletonSpawnTime = crTime;
@@ -408,10 +459,10 @@ void Map::randomSpawnRat(Uint32 crTime, SDL_Renderer* ren) {
 
         switch(x) {
             case 1:
-                x1 = 15;
+                x1 = 2;
                 break;
             case 2:
-                x1 = 16;
+                x1 = 3;
                 break;
 
         }
@@ -421,21 +472,21 @@ void Map::randomSpawnRat(Uint32 crTime, SDL_Renderer* ren) {
                 y1 = 2;
                 break;
             case 2:
-                y1 = 15;
+                y1 = 3;
                 break;
         }
 
-        if (tiles[x][y] == 0) {
+        if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5) {
             Enemy rat;
-            rat.loadTex("graphic/rat.png", ren);
+            rat.loadTex("graphic/enemy/rat.png", ren);
             if (!rat.isRendered()) {
                 return;
             }
             rat.setSrc(0,64, 64, 64);
-            rat.setDst(x1*80, y1*80, 100, 100);
+            rat.setDst(x1 * 80, y1 * 80, 100, 100);
             rat.attackDamage = RAT_DAMAGE + wave/4;
-            rat.speed = rand() % (rat_base_speed-(rat_base_speed-1)+1)+(rat_base_speed - 1);
-            rat.HP = rat_base_HP;
+            rat.speed = rand() % (this->rat_base_speed - (this->rat_base_speed - 1) + 1)+(this->rat_base_speed - 1);
+            rat.HP = this->rat_base_HP;
             rat.max_HP = rat.HP;
             rats.push_back(rat);
             lastRatSpawnTime = crTime;
@@ -446,7 +497,7 @@ void Map::randomSpawnRat(Uint32 crTime, SDL_Renderer* ren) {
 }
 
 void Map::randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren) {
-    if (crTime - lastSlimeSpawnTime >= 1000) {
+    if (crTime - lastSlimeSpawnTime >= 2000) {
         if (slime_left == 0) {
             return;
         }
@@ -471,21 +522,21 @@ void Map::randomSpawnSlime(Uint32 crTime, SDL_Renderer* ren) {
                 y1 = 2;
                 break;
             case 2:
-                y1 = 15;
+                y1 = 3;
                 break;
         }
 
-        if (tiles[x][y] == 0) {
+        if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5) {
             Enemy slime;
-            slime.loadTex("graphic/slime.png", ren);
+            slime.loadTex("graphic/enemy/slime.png", ren);
             if (!slime.isRendered()) {
                 return;
             }
-            slime.setSrc(0,64, 64, 64);
-            slime.setDst(x1*80, y1*80, 120, 120);
+            slime.setSrc(0, 64, 64, 64);
+            slime.setDst(x1 * 80, y1 * 80, 120, 120);
             slime.attackDamage = SLIME_DAMAGE + wave/4;
-            slime.speed = rand() % (slime_base_speed-(slime_base_speed-1)+1)+(slime_base_speed - 1);
-            slime.HP = slime_base_HP;
+            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime.HP = this->slime_base_HP;
             slime.max_HP = slime.HP;
             slimes.push_back(slime);
             lastSlimeSpawnTime = crTime;
@@ -524,20 +575,68 @@ void Map::randomSpawnSlimeBoss(Uint32 crTime, SDL_Renderer* ren) {
                 break;
         }
 
-        if (tiles[x][y] == 0) {
+        if (tiles[x][y] == 0 || tiles[x][y] == 5) {
             Enemy slime;
-            slime.loadTex("graphic/slime.png", ren);
+            slime.loadTex("graphic/enemy/slime.png", ren);
             if (!slime.isRendered()) {
                 return;
             }
             slime.setSrc(0,64, 64, 64);
             slime.setDst(x1*80, y1*80, 120, 120);
             slime.attackDamage = SLIME_DAMAGE + wave/4;
-            slime.speed = rand() % (slime_base_speed-(slime_base_speed-1)+1)+(slime_base_speed - 1);
-            slime.HP = slime_base_HP;
+            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime.HP = this->slime_base_HP;
             slime.max_HP = slime.HP;
             slimes.push_back(slime);
             lastSlimeSpawnTime = crTime;
+        }
+        else return;
+    }
+}
+
+void Map::randomSpawnSlimeBoss_2(Uint32 crTime, SDL_Renderer* ren) {
+    if (crTime - lastSlimeSpawnTime_2 >= 5000) {
+        if (isBossKilled) {
+            return;
+        }
+        int x1, y1;
+
+        int x = rand() % 2 + 1;
+        int y = rand() % 2 + 1;
+
+        switch(x) {
+            case 1:
+                x1 = 15;
+                break;
+            case 2:
+                x1 = 16;
+                break;
+
+        }
+
+        switch(y) {
+            case 1:
+                y1 = 2;
+                break;
+            case 2:
+                y1 = 15;
+                break;
+        }
+
+        if (tiles[x1][y1] == 0 || tiles[x1][y1] == 5 || tiles[x1][y1] == 6) {
+            Enemy slime;
+            slime.loadTex("graphic/enemy/slime_2.png", ren);
+            if (!slime.isRendered()) {
+                return;
+            }
+            slime.setSrc(0 , 0, 32, 25);
+            slime.setDst(x1 * 80, y1 * 80, 120, 120);
+            slime.attackDamage = SLIME_DAMAGE + wave/4;
+            slime.speed = rand() % (this->slime_base_speed-(this->slime_base_speed - 1) + 1)+(this->slime_base_speed - 1);
+            slime.HP = this->slime_base_HP;
+            slime.max_HP = slime.HP;
+            slimes_boss.push_back(slime);
+            lastSlimeSpawnTime_2 = crTime;
         }
         else return;
     }
@@ -558,16 +657,16 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
         }
 
         if (!enemyUpgraded) {
-            if (wave % 5 == 0) {
-                skeleton_base_speed += 1;
-                rat_base_speed += 1;
+            if (wave % 5 == 1) {
+                this->skeleton_base_speed += 1;
+                this->rat_base_speed += 1;
             }
-            if (wave % 5 == 0) {
-                slime_base_speed += 1;
+            if (wave % 5 == 1) {
+                this->slime_base_speed += 1;
             }
-            skeleton_base_HP += 2;
-            rat_base_HP += 2;
-            slime_base_HP += 2;
+            this->skeleton_base_HP += 2;
+            this->rat_base_HP += 2;
+            this->slime_base_HP += 2;
             skeleton_killed = 0;
             rat_killed = 0;
             slime_killed = 0;
@@ -580,71 +679,107 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
         intervalStartTime = crTime;
     }
 
+    if (wave == boss_1_wave_index * 5 - 1 || wave == boss_2_wave_index * 5 - 1 || wave == boss_3_wave_index * 5 - 1) {
+        BossWaveWarn.render(ren);
+    }
+
     char time[10];
     sprintf(time, "%01d", intervalTime > 0 ? intervalTime : 0);
-    Time.setText(time, {255, 255, 255, 255}, ren);
+    Time.setText(time, white, ren);
     Time.render(ren);
 
     if (intervalTime <= 0) {
+        if (slimes.size() == 0 || slimes_boss.size() == 0) {
+            isBossWave = false;
+        }
+
+        skeletons.clear();
+        rats.clear();
+        slimes.clear();
+
         intervalTime = INTERVAL_TIME;
+
         if (wave % 2 == 0) {
             skeleton_wave_nums += skeleton_add;
             rat_wave_nums += rat_add;
             slime_wave_nums += slime_add;
         }
+
         if (skeleton_wave_nums > 8) skeleton_wave_nums = 8;
         if (rat_wave_nums > 6) rat_wave_nums = 6;
         if (slime_wave_nums > 6) slime_wave_nums = 6;
         skeleton_left = skeleton_wave_nums;
         rats_left = rat_wave_nums;
         slime_left = slime_wave_nums;
+
         Time.destroy();
+
         wave++;
-        if (wave == 5 && !mapChange) {
+
+        if (!isBossWave) {
+            if (currentMap == MAP_1) {
+                loadMap(ren, "map/map1.txt");
+            }
+            else if (currentMap == MAP_2) {
+                loadMap(ren, "map/map2.txt");
+            }
+            else loadMap(ren, "map/map3.txt");
+        }
+
+        if (wave == boss_1_wave_index * 5) {
+            player.dst.x = 9 * TILE_SIZE;
+            player.dst.y = 8 * TILE_SIZE;
             boss = boss_1;
+            boss.loadTex("graphic/boss/Boss_1.png", ren);
             boss.HP = boss_1.max_HP;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
-            loadMap(ren, "map2.txt");
+            loadMap(ren, "map/map_boss_1.txt");
             isBossWave = true;
             currentBoss = BOSS_1;
             enemySpawn = false;
-            mapChange = true;
-            //isMap2 = true;
-            //isMap1 = false;
-        } else if (wave == 10 && !mapChange) {
+            boss_1_wave_index += 3;
+        }
+
+        else if (wave == boss_2_wave_index * 5) {
+            player.dst.x = 7 * TILE_SIZE;
+            player.dst.y = 8 * TILE_SIZE;
             boss = boss_2;
+            boss.loadTex("graphic/boss/Boss_2.png", ren);
             boss.HP = boss_2.max_HP;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
-            loadMap(ren, "map.txt");
+            loadMap(ren, "map/map_boss_2.txt");
             isBossWave = true;
             currentBoss = BOSS_2;
             enemySpawn = false;
-            mapChange = true;
-            //isMap1 = true;
-            //isMap2 = false;
-        } else if (wave == 15 && !mapChange) {
+            boss_2_wave_index += 3;
+        }
+
+        else if (wave == boss_3_wave_index * 5) {
+            player.dst.x = 7 * TILE_SIZE;
+            player.dst.y = 8 * TILE_SIZE;
             boss = boss_3;
+            boss.loadTex("graphic/boss/Boss_3.png", ren);
             boss.HP = boss_3.max_HP;
             boss.isDied = false;
             boss.isAttacking = false;
             boss.animFrame = 0;
-            loadMap(ren, "map3.txt");
+            loadMap(ren, "map/map_boss_3.txt");
             isBossWave = true;
             currentBoss = BOSS_3;
             enemySpawn = false;
-            mapChange = true;
-            //isMap2 = false;
-            //isMap1 = true;
-        } else {
-            mapChange = false;
+            boss_3_wave_index += 3;
+        }
+
+        else {
             isBossWave = false;
             currentBoss = NONE;
             enemySpawn = true;
         }
+
         isInterval = false;
         pointUpgraded = false;
         enemyUpgraded = false;
@@ -655,7 +790,7 @@ void Map::intervalCount(Uint32 crTime, SDL_Renderer* ren, Player& player) {
 void Map::renderWave(SDL_Renderer* ren) {
     char wave_[10];
     sprintf(wave_, "WAVE:%01d", wave);
-    Wave.setText(wave_, {255, 255, 255, 255}, ren);
+    Wave.setText(wave_, white, ren);
     Wave.render(ren);
 }
 
