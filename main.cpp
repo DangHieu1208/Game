@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
         case instruct:
             background.render(renderer, background.dst, player.camera);
             playButton.renderButton(renderer, player.camera);
-            Instruction.multiLinesRender("Move with W, A, S, D.\nAttack with J, defend with K.\nIf you defend for more than 2 consecutive seconds,\nyour character will no longer be able to defend.\nThere will be a 15-second break between each wave.\nPress ESC to pause the game.", {255, 255, 255, 255}, renderer);
+            Instruction.multiLinesRender("Move with W, A, S, D.\nAttack with J, defend with K.\nIf you defend for more than 2 consecutive seconds,\nyour character will no longer be able to defend.\nThere will be a 10-second break between each wave.\nPress ESC to pause the game.", {255, 255, 255, 255}, renderer);
             break;
         case playing:
             player.update(currentTime);
